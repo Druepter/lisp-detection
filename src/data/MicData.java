@@ -45,9 +45,12 @@ public class MicData {
 				eng.eval("x = 2;");
 				eng.eval("y = 3;");
 
+				eng.eval("cd 'C:\\Users\\druep\\Documents\\Hochschule\\Master\\Sprachverständlichkeit\\lisp_detection\\src'");
 				
+				//eng.eval("test(7)");
 				  
-				
+				String huhu = eng.feval("test", "7").toString();
+				System.out.println("Ergebnis: " + huhu);
 				
 				eng.eval("disp(z);");
 				
