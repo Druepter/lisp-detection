@@ -7,7 +7,9 @@ function isLisp = lispAnalyze(audio, normal, lisp, rest)
     % determine silence but this is easier on memory
     % an alternative to this would be a noise gate or a
     % reference mean found during calibration
-    disp(std(audio))
+    if std(audio) > 0.1
+        return isLisp = 0;
+    end
 
     audioFft = fft(audio);
 
