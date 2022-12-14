@@ -6,7 +6,7 @@ function isHit = examineSegment(fftMagnitude, segment, rest)
     % scale the segment
     scaledSegment = zeros(length(segment));
     for i = 1:length(segment)
-        scaledSegment(i) = i - low;
+        scaledSegment(i) = segment(i) - low;
     end
     % we have to make sure the rest segment isn't greater than the whole length
     sliceMean = mean(slicedFft(scaledSegment(1):min(scaledSegment(2), end)));
@@ -15,7 +15,7 @@ function isHit = examineSegment(fftMagnitude, segment, rest)
     elseif segment(1) == 1
         sliceMeanRest = mean(slicedFft(scaledSegment(2):end));
     else
-        sliceMeanRest = mean(vcat(slicedFft(1:scaledSegment(1)), slicedFft(scaledSegment(2):end)));
+        sliceMeanRest = mean(cat(1, slicedFft(1:scaledSegment(1)), slicedFft(scaledSegment(2):end)));
     end
     sliceMeanDiff = sliceMean - sliceMeanRest;
     isHit = sliceMeanDiff > 0;
