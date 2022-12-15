@@ -2,9 +2,12 @@ package data;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 
 import javax.sound.sampled.AudioFileFormat;
@@ -34,6 +37,33 @@ public class MicData {
 	
 	public static void main(String[] args) {
 		
+		Properties p = new Properties();
+		
+		String mode = "";
+		String normalFreqs = "";
+		String lispFreqs = "";
+		String restFreqs = "";
+		
+		
+		try {
+			
+			p.load(new FileInputStream("config.txt"));
+			
+			mode = p.getProperty("mode");
+			normalFreqs = p.getProperty("normalFreqs");
+			lispFreqs = p.getProperty("lispFreqs");
+			restFreqs = p.getProperty("restFreqs");
+			
+			
+			
+		} catch (FileNotFoundException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		} catch (IOException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
+		
 		
 		try {
 			
@@ -49,18 +79,23 @@ public class MicData {
 				
 				//eng.eval("test(7)");
 				  
-				String huhu = eng.feval("test", "7").toString();
-				System.out.println("Ergebnis: " + huhu);
+				//String huhu = eng.feval("realTimeAudioProcessingFunction").toString();
+				
+				eng.feval("realTimeAudioProcessingFunction", mode, normalFreqs, lispFreqs, restFreqs);
+				
+				//eng.eval("realTimeAudioProcessingFunction()");
+				
+				//System.out.println("Ergebnis: " + huhu);
 				
 				eng.eval("disp(z);");
 				
-				double myVar = eng.getVariable("x");
-				System.out.println(myVar);
+				//double myVar = eng.getVariable("z");
+				//System.out.println(myVar);
 				
 				Thread.sleep(5000);
 				
 				
-				
+				//Solange nicht gelispelt wird Schleife in Matlab ausführen, wenn gelispelt wird Schleife abbrechen und Rückgabe an Java -> Script neu starten
 				
 				
 				

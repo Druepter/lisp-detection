@@ -24,19 +24,23 @@ function [m] = realTimeAudioProcessingFunction(mode, normalFreqs, lispFreqs, res
     lispFreqs = strsplit(lispFreqs,',');
     lispFreqs = str2double(lispFreqs);
     
+
     restFreqs = strsplit(restFreqs,',');
     restFreqs = str2double(restFreqs);
     
 
-    %%Build parameter array to pass it into callAnalyze Function
+
+
     params = [normalFreqs', lispFreqs', restFreqs'];
     
-    
+    disp(params);
+
     
     %% loop over analyze
     i = 0;
     count = 0;
     
+
 
     m = "huhu";
 
