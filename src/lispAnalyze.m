@@ -8,7 +8,8 @@ function isLisp = lispAnalyze(audio, normal, lisp, rest)
     % an alternative to this would be a noise gate or a
     % reference mean found during calibration
     if std(audio) > 0.02
-        return isLisp = 0;
+        isLisp = 0;
+        return
     end
 
     audioFft = fft(audio);
@@ -17,9 +18,11 @@ function isLisp = lispAnalyze(audio, normal, lisp, rest)
     if examineSegment(audioFft, lisp, rest)
         disp("Lisp detected!")
         isLisp = 1;
+        return
     elseif examineSegment(audioFft, normal, rest)
         disp("No lisp detected!")
         isLisp = -1;
+        return
     end
     % otherwise return 0
     isLisp = 0;
