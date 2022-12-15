@@ -1,4 +1,4 @@
-function [iteration, counter] = callAnalyze(mode, iteration, counter, audio, parameters)
+function [iteration, counter] = callAnalyze(mode, iteration, counter, audio, params)
     iteration = iteration + 1;
 
     if mode == "lisp"
