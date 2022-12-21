@@ -16,11 +16,9 @@ function isLisp = lispAnalyze(audio, normal, lisp, rest)
 
     % return 1 if this segment is a lisp and -1 if non-lisp
     if examineSegment(audioFft, lisp, rest)
-        disp("Lisp detected!")
         isLisp = 1;
         return
     elseif examineSegment(audioFft, normal, rest)
-        disp("No lisp detected!")
         isLisp = -1;
         return
     end
