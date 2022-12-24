@@ -35,7 +35,7 @@ public class MicData {
 	
 	private static MatlabEngine eng;
 	
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		
 		Properties p = new Properties();
 		
@@ -126,6 +126,8 @@ public class MicData {
 		
 		try
 		{
+		
+		*/
 			/*AudioFormat audioFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 44100, 16, 2, 4, 44100, false);
 			
 			DataLine.Info dataInfo = new DataLine.Info(SourceDataLine.class, audioFormat);
@@ -215,13 +217,13 @@ public class MicData {
 			//JOptionPane.showMessageDialog(null, "Sie lieben sich zu " +sum + "%!", "Beweis", JOptionPane.PLAIN_MESSAGE);
 			
 			
-		}
+		/*}
 		catch(Exception e)
 		{
 			System.out.println(e);
 		}
 		
 		
-	}
+	}*/
 	
 }
