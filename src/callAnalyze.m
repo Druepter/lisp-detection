@@ -25,6 +25,9 @@ function [i_and_count] = callAnalyze(mode, i_and_count, audio, params)
         if i_and_count(2) > 0
             disp(alarmText) % this should eventually be replaced by a uialert
             playSound(i_and_count(2) * 0.25); % audio notification: count * 0.25 s
+            % for testing purposes return true
+            i_and_count = true;
+            return
         end
         % now we reset counter and iteration
         i_and_count = [0, 0];

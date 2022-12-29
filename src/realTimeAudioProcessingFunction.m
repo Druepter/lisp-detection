@@ -37,7 +37,7 @@ function [m] = realTimeAudioProcessingFunction(mode, normalFreqs, lispFreqs, res
     i_and_count = [0, 0];
     
 
-    m = "huhu";
+    m = true;
 
     tic
     while toc
@@ -50,5 +50,11 @@ function [m] = realTimeAudioProcessingFunction(mode, normalFreqs, lispFreqs, res
     
          % actually run the analyze
          i_and_count = callAnalyze(mode, i_and_count, x, params);
+
+         % exit the loop by returning
+         if isa(i_and_count, "double")
+             return
+         end
+
     end    
 end
