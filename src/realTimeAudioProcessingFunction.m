@@ -52,7 +52,7 @@ function [m] = realTimeAudioProcessingFunction(mode, normalFreqs, lispFreqs, res
          i_and_count = callAnalyze(mode, i_and_count, x, params);
 
          % exit the loop by returning
-         if isa(i_and_count, "double")
+         if isa(i_and_count, "logical")
              return
          end
 
