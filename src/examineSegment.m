@@ -1,4 +1,13 @@
 function isHit = examineSegment(fftMagnitude, segment, rest)
+    % EXAMINESEGMENT Examing an audio segment's FFT magnitude
+    % 
+    % Parameters:
+    % * fftMagnitude: Audio segment's FFT magnitude.
+    % * segment:      Frequency segment to be looked for.
+    % * rest:         Frequency band to be used for calculations.
+    % 
+    % Returns:
+    % * isHit: Logical whether a hit was detected.
     low = rest(1);
     high = rest(2);
     % normalized bandpass

@@ -34,11 +34,10 @@ function [m] = realTimeAudioProcessingFunction(mode, normalFreqs, lispFreqs, res
     
     
     %% loop over analyze
-    i = 0;
-    count = 0;
+    i_and_count = [0, 0];
     
 
-    m = "huhu";
+    m = true;
 
     tic
     while toc
@@ -50,6 +49,12 @@ function [m] = realTimeAudioProcessingFunction(mode, normalFreqs, lispFreqs, res
          %step(Out, y);
     
          % actually run the analyze
-         i, count = callAnalyze(mode, i, count, x, params);
+         i_and_count = callAnalyze(mode, i_and_count, x, params);
+
+         % exit the loop by returning
+         if isa(i_and_count, "logical")
+             return
+         end
+
     end    
 end

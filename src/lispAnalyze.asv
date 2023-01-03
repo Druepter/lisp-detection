@@ -7,7 +7,7 @@ function isLisp = lispAnalyze(audio, normal, lisp, rest)
     % * audio:  audio array to be analyzed
     % * normal: correct pronunciation's frequencies
     % * lisp:   lisp pronunciation's frequencies
-    % * rest:   all frequencies to analyze, used as a bandpass
+    % * rest: all frequencies to analyze, used as a bandpass
     %
     % Returns:
     % * isLisp, either 0 for nothing detected, 1 for lisp detected, or -1
