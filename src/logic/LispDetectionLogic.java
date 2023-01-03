@@ -84,36 +84,61 @@ public class LispDetectionLogic {
 	public void stopRecording() {
 		
 		isRecording = false;
-	}
-	
-	
-	public void runMatlabLispDetection() {
-		
 		try {
-			
-			eng = MatlabEngine.startMatlab();
-			
-			eng.eval("cd 'C:\\Users\\druep\\Documents\\Hochschule\\Master\\Sprachverständlichkeit\\lisp_detection\\src'");
-			
-			eng.feval("realTimeAudioProcessingFunction", mode, normalFreqs, lispFreqs, restFreqs);
-			
-			
+			//eng.disconnect();
+			//Gewollt Exception auslösen um Programm zu beenden
+			eng.quit();
+			//eng.close();
 		} catch (EngineException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalStateException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (ExecutionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
+	}
+	
+	
+	public void runMatlabLispDetection() {
 		
+		
+		new Thread(new Runnable() {
+			
+			public void run() {
+				
+				try {
+					
+					eng = MatlabEngine.startMatlab();
+					
+					eng.eval("cd 'C:\\Users\\druep\\Documents\\Hochschule\\Master\\Sprachverständlichkeit\\lisp_detection\\src'");
+					
+					eng.feval("realTimeAudioProcessingFunction", mode, normalFreqs, lispFreqs, restFreqs);	
+					
+				
+					
+					//eng.feval("test", 7);
+					
+				} catch (EngineException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IllegalArgumentException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IllegalStateException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ExecutionException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			
+			}
+		}).start();
+		
+		
+	
 	}
 }

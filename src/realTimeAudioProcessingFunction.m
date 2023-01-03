@@ -45,9 +45,9 @@ function [m] = realTimeAudioProcessingFunction(mode, normalFreqs, lispFreqs, res
 
          disp("Schleife läuft");
          x = step(In);
-         y = x;
+         %y = x;
     
-         step(Out, y);
+         %step(Out, y);
     
          % actually run the analyze
          i, count = callAnalyze(mode, i, count, x, params);
