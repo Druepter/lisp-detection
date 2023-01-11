@@ -9,6 +9,8 @@ import java.util.concurrent.ExecutionException;
 import com.mathworks.engine.EngineException;
 import com.mathworks.engine.MatlabEngine;
 
+import gui.LispDetectionScreen;
+
 public class LispDetectionLogic {
 
 	
@@ -20,7 +22,12 @@ public class LispDetectionLogic {
 	String restFreqs = "";
 	
 	boolean isRecording = false;
+
 	
+	boolean lispDetected = false;
+	
+	
+	LispDetectionScreen lispDetectionScreen;
 	
 	public LispDetectionLogic() {
 		
@@ -63,7 +70,21 @@ public class LispDetectionLogic {
 	
 	public void startRecording() {
 		
-		runMatlabLispDetection();
+		
+		MatlabThread matlabThread = new MatlabThread(mode, normalFreqs, lispFreqs, restFreqs);
+		Thread thread = new Thread(matlabThread);
+		thread.start();
+		try {
+			thread.join();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		boolean value = matlabThread.getValue();
+		
+		System.out.println(value);
+		
+		//runMatlabLispDetection();
 		
 		//Erstelle neuen Thread damit die Methode im Hintergrund läuft
 		/*new Thread(new Runnable() {
@@ -98,6 +119,60 @@ public class LispDetectionLogic {
 		}
 	}
 	
+	public void setLispDetectionScreen(LispDetectionScreen _lispDetectionScreen) {
+		
+		lispDetectionScreen = _lispDetectionScreen;
+		
+	}
+	
+	public void lispDetected() {
+				
+		new Thread(new Runnable() {
+			
+			public void run() {
+				
+				try {
+					
+					eng = MatlabEngine.startMatlab();
+					
+					eng.eval("cd 'C:\\Users\\druep\\Documents\\Hochschule\\Master\\Sprachverständlichkeit\\lisp_detection\\src'");
+					
+					lispDetected = eng.feval("realTimeAudioProcessingFunction", mode, normalFreqs, lispFreqs, restFreqs);	
+					
+					
+					if(lispDetected == true) {
+						lispDetectionScreen.sendNotification();
+						lispDetected();
+					}
+					
+					//eng.feval("test", 7);
+					
+				} catch (EngineException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IllegalArgumentException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IllegalStateException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ExecutionException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			
+			}	
+		}).start();		
+
+	}
+	
+	
+	
+	
+	
 	
 	public void runMatlabLispDetection() {
 		
@@ -112,8 +187,10 @@ public class LispDetectionLogic {
 					
 					eng.eval("cd 'C:\\Users\\druep\\Documents\\Hochschule\\Master\\Sprachverständlichkeit\\lisp_detection\\src'");
 					
-					eng.feval("realTimeAudioProcessingFunction", mode, normalFreqs, lispFreqs, restFreqs);	
+					boolean lispDeteced = eng.feval("realTimeAudioProcessingFunction", mode, normalFreqs, lispFreqs, restFreqs);	
 					
+					System.out.println(lispDeteced);
+				
 				
 					
 					//eng.feval("test", 7);
