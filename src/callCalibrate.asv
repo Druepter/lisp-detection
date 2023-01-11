@@ -11,8 +11,7 @@ function params = callCalibrate(mode)
 
     In = audioDeviceReader;
     In.Device = "default";
-    % set default frame length to 1 second
-    In.SamplesPerFrame = In.SampleRate; 
+    In.SamplesPerFr
 
     if mode == "lisp"
         ;
