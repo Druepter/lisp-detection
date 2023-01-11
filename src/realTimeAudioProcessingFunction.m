@@ -1,10 +1,17 @@
-function [m] = realTimeAudioProcessingFunction(mode, normalFreqs, lispFreqs, restFreqs)
-    % config file means no params need to get passed
-    % alternatively we do the config file reading separately
-    % and pass the params but this is already done at least
-    %% initialize audio devices
-    % input audio device
-    In = audioDeviceReader;
+function [m] = realTimeAudioProcessingFunction(mode, params)
+    % REALTIMEAUDIOPROCESSINGFUNCTION
+    %
+    % realTimeAudioProcessingFunction("lisp", [1050, 5500, 1000; 1350, 6500, 22050])
+    %
+    % realTimeAudioProcessingFunction("noisegate", 0.1)
+    %
+    % Params:
+    % * mode:   audio processing mode [lisp, noisegate]
+    % * params: parameters for audio processing, mode-dependent
+    %
+    % Returns:
+    % * m: true, is only returned once something is detected
+    In = audioDeviceReader; % input audio device
     In.Device = "default";
     
     % set frame window in samples
@@ -16,20 +23,20 @@ function [m] = realTimeAudioProcessingFunction(mode, normalFreqs, lispFreqs, res
     Out = audioDeviceWriter;
     Out.Device = "default";
     
-
-    %%Spilt Parameters and convert them to double array
-    normalFreqs = strsplit(normalFreqs,',');
-    normalFreqs = str2double(normalFreqs);
-
-    lispFreqs = strsplit(lispFreqs,',');
-    lispFreqs = str2double(lispFreqs);
-    
-    restFreqs = strsplit(restFreqs,',');
-    restFreqs = str2double(restFreqs);
-    
-
-    %%Build parameter array to pass it into callAnalyze Function
-    params = [normalFreqs', lispFreqs', restFreqs'];
+%% This was how we read the params for lisp detected - leaving here for now
+%     %%Split Parameters and convert them to double array
+%     normalFreqs = strsplit(normalFreqs,',');
+%     normalFreqs = str2double(normalFreqs);
+% 
+%     lispFreqs = strsplit(lispFreqs,',');
+%     lispFreqs = str2double(lispFreqs);
+%     
+%     restFreqs = strsplit(restFreqs,',');
+%     restFreqs = str2double(restFreqs);
+%     
+% 
+%     %%Build parameter array to pass it into callAnalyze Function
+%     params = [normalFreqs', lispFreqs', restFreqs'];
     
     
     

@@ -10,7 +10,7 @@ function isAbove = noiseGateAnalyze(audio, threshold)
     % Returns:
     % * isAbove: 0 for no values in audio above threshold, 1 otherwise
     isAbove = 0;
-    if any(audio .> threshold)
+    if any(audio > threshold)
         isAbove = 1;
     end
 end

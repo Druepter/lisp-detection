@@ -7,8 +7,11 @@ function threshold = noiseGateCalibrate(In)
     % * In: input audio device
     % 
     % Returns:
-    % * threshold: noise gate threshold; 2 * maximum of 1s audio recording
+    % * threshold: noise gate threshold; 4 * maximum of 1s audio recording
+
+    In.SamplesPerFrame = In.SampleRate;
+
     audio = step(In);
 
-    threshold = maximum(audio) * 2;
+    threshold = max(audio) * 4;
 end

@@ -21,7 +21,7 @@ function [i_and_count] = callAnalyze(mode, i_and_count, audio, params)
         maxIterations = 1;
         alarmText = "Volume above noise gate!";
 
-        i_and_count(2) = noiseGateAnalyze(audio, params[1]);
+        i_and_count(2) = noiseGateAnalyze(audio, params(1));
 
     else
         error("Unknown mode passed!")
