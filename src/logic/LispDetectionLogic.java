@@ -1,8 +1,11 @@
 package logic;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 
@@ -168,6 +171,84 @@ public class LispDetectionLogic {
 		}).start();		
 
 	}
+	
+	
+	
+	//Methode, welche Audio processing Script in Matlab aufruft
+	public void callAudioProcessing() {
+		
+		//Hier wird ein neuer Thread erstellt, damit die Funktion noch abgebrochen werden kann
+		new Thread(new Runnable() {
+			
+			public void run() {
+				
+				try {
+				
+					//Da die Matlab Engine einen absoluten Pfad entgegen nimmt wird hier der absolute Pfad es Projektes ermittelt
+					Path root = FileSystems.getDefault().getPath("").toAbsolutePath();
+					String rootPath = root.toString();
+					rootPath = rootPath + "\\src";
+					
+					
+					//MatlabEngine wird gestartet
+					eng = MatlabEngine.startMatlab();
+					//Pfad zum Ordner im welchen das Script liegt
+					eng.eval("cd " + rootPath);
+					
+					
+					
+					lispDetected = eng.feval("realTimeAudioProcessingFunction", mode, normalFreqs, lispFreqs, restFreqs);	
+					
+					
+					
+
+					
+					
+					if(lispDetected == true) {
+						lispDetectionScreen.sendNotification();
+						lispDetected();
+					}
+					
+					//eng.feval("test", 7);
+					
+				} catch (EngineException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IllegalArgumentException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IllegalStateException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ExecutionException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			
+			}	
+			
+			
+			
+		}).start();
+
+
+	}	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	

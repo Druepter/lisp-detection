@@ -32,7 +32,7 @@ public class LispDetectionScreen implements ActionListener{
 		startButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("Starte");
-				lispDetectionLogic.lispDetected();
+				lispDetectionLogic.callAudioProcessing();
 				System.out.println("Nach aufruf");
 				//Observer einbauen
 				//Oder Die GUI mitgeben dann dann Text dirket im Thread ändern = unschön
