@@ -13,13 +13,14 @@ function [i_and_count] = callAnalyze(mode, i_and_count, audio, params)
 
     if mode == "lisp"
         maxIterations = 10;
-        alarmText = "Lots of lisping!";
+        % alarm texts can't really be sent out via a backgroundPool worker
+        % alarmText = "Lots of lisping!";
 
         % +1 if lisp, -1 if no lisp, 0 else  | NORMAL        LISP          REST (bandpass)
         i_and_count(2) = i_and_count(2) + lispAnalyze(audio, params(:, 1), params(:, 2), params(:, 3));
     elseif mode == "noisegate"
         maxIterations = 1;
-        alarmText = "Volume above noise gate!";
+        % alarmText = "Volume above noise gate!";
 
         i_and_count(2) = noiseGateAnalyze(audio, params(1));
 
