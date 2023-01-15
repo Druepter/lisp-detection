@@ -29,10 +29,8 @@ function [i_and_count] = callAnalyze(mode, i_and_count, audio, params)
     % check if we've hit max iterations and check for our condition
     if i_and_count(1) == maxIterations
         if i_and_count(2) > 0
-            disp(alarmText) % this should eventually be replaced by a uialert
-            playSound(i_and_count(2) * 0.25); % audio notification: count * 0.25 s
             % for testing purposes return true
-            i_and_count = true;
+            i_and_count = i_and_count(2);
             return
         end
         % now we reset counter and iteration

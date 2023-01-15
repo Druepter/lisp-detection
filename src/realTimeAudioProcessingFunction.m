@@ -1,4 +1,4 @@
-function [m] = realTimeAudioProcessingFunction(mode, params)
+function [i_and_count] = realTimeAudioProcessingFunction(mode, params)
     % REALTIMEAUDIOPROCESSINGFUNCTION
     %
     % realTimeAudioProcessingFunction("lisp", [1050, 5500, 1000; 1350, 6500, 22050])
@@ -10,7 +10,7 @@ function [m] = realTimeAudioProcessingFunction(mode, params)
     % * params: parameters for audio processing, mode-dependent
     %
     % Returns:
-    % * m: true, is only returned once something is detected
+    % * i_and_count: number of detections once enough detections are made
     In = audioDeviceReader; % input audio device
     In.Device = "default";
     
@@ -44,7 +44,7 @@ function [m] = realTimeAudioProcessingFunction(mode, params)
     i_and_count = [0, 0];
     
 
-    m = true;
+    firstRun = true;
 
     tic
     while toc
@@ -54,14 +54,27 @@ function [m] = realTimeAudioProcessingFunction(mode, params)
          y = x;
     
          step(Out, y);
-    
-         % actually run the analyze
-         i_and_count = callAnalyze(mode, i_and_count, x, params);
+
+         % make sure we're not on the first run
+         if firstRun == false
+             % if we aren't then we can fetch the previous run's output
+             i_and_count = fetchOutputs(f);
+         else
+             % note we're no longer on first run
+             firstRun = false;
+         end
 
          % exit the loop by returning
-         if isa(i_and_count, "logical")
+         if length(i_and_count) == 1
+             playSound(i_and_count * 1); % audio notification: count * 1 s
              return
          end
+
+         % run analysis
+         % this is done in the background so we can keep recording while
+         % processing (useful for slower analysis scripts)
+         f = parfeval(backgroundPool, @callAnalyze, 1, mode, ...
+             i_and_count, x, params);
 
     end    
 end
