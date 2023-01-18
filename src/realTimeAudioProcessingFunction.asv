@@ -1,6 +1,6 @@
-function [m] = realTimeAudioProcessingFunction(mode, normalFreqs, lispFreqs, restFreqs, paramsArray)
+function [m] = realTimeAudioProcessingFunction(mode, normalFreqs, lispFreqs, restFreqs, )
 
-    disp(paramsArray);
+    %disp(paramsMap);
 
     % config file means no params need to get passed
     % alternatively we do the config file reading separately
@@ -34,12 +34,8 @@ function [m] = realTimeAudioProcessingFunction(mode, normalFreqs, lispFreqs, res
     %%Build parameter array to pass it into callAnalyze Function
     params = [normalFreqs', lispFreqs', restFreqs'];
     
-    disp(params);
     
-    params = paramsArray;
-
-    disp(params)
-
+    
     %% loop over analyze
     i_and_count = [0, 0];
     

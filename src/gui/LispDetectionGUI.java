@@ -13,17 +13,21 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import logic.LispDetectionLogic;
+import logic.AudioAnalyzeLogic;
 
+//Klasse für die GUI der LispDetection
+public class LispDetectionGUI implements ActionListener, AudioAnalyzeGUI{
 
-public class LispDetectionScreen implements ActionListener{
-
+	AudioAnalyzeLogic audioAnalyzeLogic;
+	
 	
 	boolean lispDetected = false;
 	JLabel label = new JLabel("Hallo 1234");
 
 	
-	public LispDetectionScreen(LispDetectionLogic lispDetectionLogic) {
+	
+	
+	public LispDetectionGUI() {
 		
 		JFrame frame = new JFrame();
 		
@@ -32,7 +36,10 @@ public class LispDetectionScreen implements ActionListener{
 		startButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("Starte");
-				lispDetectionLogic.callAudioProcessing();
+				audioAnalyzeLogic.callAudioProcessing();
+				
+				
+				
 				System.out.println("Nach aufruf");
 				//Observer einbauen
 				//Oder Die GUI mitgeben dann dann Text dirket im Thread ändern = unschön
@@ -45,7 +52,7 @@ public class LispDetectionScreen implements ActionListener{
 		stopButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("Stoppe");
-				lispDetectionLogic.stopRecording();
+				audioAnalyzeLogic.stopAudioProcessing();
 			}
 		});		
 
@@ -86,12 +93,12 @@ public class LispDetectionScreen implements ActionListener{
 		
 	}
 	
+	
+	
 	public void sendNotification() {
 		label.setText("true");
 		
-		Timer timer = new Timer();
-
-		
+		/*Timer timer = new Timer();
 		TimerTask setLispNotificationToFalse = new TimerTask() {
 			@Override
 			public void run() {
@@ -100,20 +107,24 @@ public class LispDetectionScreen implements ActionListener{
 			}
 		};
 		
-		timer.schedule(setLispNotificationToFalse, 15000);
+		timer.schedule(setLispNotificationToFalse, 15000);*/
 		
 	}
 	
 	
 	public static void main(String[] args) {
 		
-		LispDetectionLogic lispDetectionLogic = new LispDetectionLogic();
+		//Erstelle die LispDetectionGui
+		LispDetectionGUI lispDetectionGUI = new LispDetectionGUI();
+		//Erstelle die AudioAnalyzeLogic und übergebe LispDetectionGUI
+		AudioAnalyzeLogic audioAnalyzeLogic = new AudioAnalyzeLogic(lispDetectionGUI);
 		
-		LispDetectionScreen lispDetectionScreen = new LispDetectionScreen(lispDetectionLogic);
+		//Setzte in der LispDetectionGUI die AudioAnalyzeLogic
+		lispDetectionGUI.setAudioAnalyzeLogic(audioAnalyzeLogic);
 		
 		
 		
-		lispDetectionLogic.setLispDetectionScreen(lispDetectionScreen);
+		
 		
 		
 
@@ -129,6 +140,21 @@ public class LispDetectionScreen implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		System.out.println("huhu");
+		
+	}
+
+	@Override
+	public void setAudioAnalyzeLogic(AudioAnalyzeLogic audioAnalyzeLogic) {
+		// TODO Auto-generated method stub
+		this.audioAnalyzeLogic = audioAnalyzeLogic;
+	}
+
+
+
+	@Override
+	public void audioAnalyzeNotification() {
+		// TODO Auto-generated method stub
+		label.setText("true");
 		
 	}
 	
