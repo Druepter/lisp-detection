@@ -1,0 +1,17 @@
+function [normalFreqs, lispFreqs, restFreqs] = lispCalibrate(In)
+%UNTITLED Summary of this function goes here
+%   Detailed explanation goes here
+
+    In.SamplesPerFrame = In.SampleRate * 2;
+    disp("For the next 3 seconds, make a normal S sound.")
+    pause(0.5);
+
+    audio = step(In);
+    audioF = abs(fft(audio));
+    ofInterest = audioF(:, 1000:round(in.SampleRate / 2));
+    [~, locs] = findpeaks(ofInterest, 'MaxPeakWidth', 1000, ...
+        'MinPeakHeight', maximum(ofinterest) / 4);
+    normalFreqs = [min(locs) + range(, max(locs) + range(1)] ;
+end
+
+end
