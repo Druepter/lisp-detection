@@ -1,4 +1,9 @@
-function [m] = realTimeAudioProcessingFunction(mode, normalFreqs, lispFreqs, restFreqs)
+function [m] = realTimeAudioProcessingFunction(mode, params)
+    % REALTIMEAUDIOPROCESSINGFUNCTION
+    %
+    % realTimeAudioProcessingFunction("lisp", "1050, 1350", "5500, 6500", "1000, 22050")
+    %
+    % Params:
     % config file means no params need to get passed
     % alternatively we do the config file reading separately
     % and pass the params but this is already done at least
@@ -17,19 +22,19 @@ function [m] = realTimeAudioProcessingFunction(mode, normalFreqs, lispFreqs, res
     Out.Device = "default";
     
 
-    %%Spilt Parameters and convert them to double array
-    normalFreqs = strsplit(normalFreqs,',');
-    normalFreqs = str2double(normalFreqs);
-
-    lispFreqs = strsplit(lispFreqs,',');
-    lispFreqs = str2double(lispFreqs);
-    
-    restFreqs = strsplit(restFreqs,',');
-    restFreqs = str2double(restFreqs);
-    
-
-    %%Build parameter array to pass it into callAnalyze Function
-    params = [normalFreqs', lispFreqs', restFreqs'];
+%     %%Spilt Parameters and convert them to double array
+%     normalFreqs = strsplit(normalFreqs,',');
+%     normalFreqs = str2double(normalFreqs);
+% 
+%     lispFreqs = strsplit(lispFreqs,',');
+%     lispFreqs = str2double(lispFreqs);
+%     
+%     restFreqs = strsplit(restFreqs,',');
+%     restFreqs = str2double(restFreqs);
+%     
+% 
+%     %%Build parameter array to pass it into callAnalyze Function
+%     params = [normalFreqs', lispFreqs', restFreqs'];
     
     
     
