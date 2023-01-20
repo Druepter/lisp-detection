@@ -16,6 +16,7 @@ function [i_and_count] = realTimeAudioProcessingFunction(mode, params)
     % Returns:
     % * i_and_count: number of detections once enough detections are made
     In = audioDeviceReader; % input audio device
+
     In.Device = "default";
     
     % set frame window in samples
@@ -41,9 +42,7 @@ function [i_and_count] = realTimeAudioProcessingFunction(mode, params)
 % 
 %     %%Build parameter array to pass it into callAnalyze Function
 %     params = [normalFreqs', lispFreqs', restFreqs'];
-    
-    
-    
+
     %% loop over analyze
     i_and_count = [0, 0];
     
