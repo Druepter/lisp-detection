@@ -1,4 +1,8 @@
 function [i_and_count] = realTimeAudioProcessingFunction(mode, params)
+
+    disp(mode);
+    disp(params);
+
     % REALTIMEAUDIOPROCESSINGFUNCTION
     %
     % realTimeAudioProcessingFunction("lisp", [1050, 5500, 1000; 1350, 6500, 22050])
@@ -46,6 +50,8 @@ function [i_and_count] = realTimeAudioProcessingFunction(mode, params)
 
     firstRun = true;
 
+    %mode = "noisegate";
+
     tic
     while toc
 
@@ -53,7 +59,7 @@ function [i_and_count] = realTimeAudioProcessingFunction(mode, params)
          x = step(In);
          %y = x;
     
-         step(Out, y);
+         %step(Out, y);
 
          % make sure we're not on the first run
          if firstRun == false

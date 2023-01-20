@@ -146,9 +146,13 @@ public class AudioAnalyzeLogic {
 					//Pfad zum Ordner im welchen das Script liegt
 					eng.eval("cd " + rootPath);
 					
+					
 					//Matlab Funktion wird aufgerufen
-					lispDetected = eng.feval("realTimeAudioProcessingFunction", mode, normalFreqs, lispFreqs, restFreqs, paramsArray);	
+					lispDetected = eng.feval("realTimeAudioProcessingFunction", mode, paramsArray);	
 		
+					System.out.println(lispDetected);
+					
+					
 					//Wenn Matlab true zurückgibt dann sende eine Notification an die GUI 
 					if(lispDetected == true) {
 						//sende Notification

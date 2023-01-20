@@ -1,6 +1,9 @@
 package gui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.EventQueue;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -12,6 +15,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.UIManager;
 
 import logic.AudioAnalyzeLogic;
 
@@ -20,6 +24,11 @@ public class LispDetectionGUI implements ActionListener, AudioAnalyzeGUI{
 
 	AudioAnalyzeLogic audioAnalyzeLogic;
 	
+	static JFrame mainFrame = new JFrame();
+	static JFrame lispStatusFrame = new JFrame();
+	
+	JPanel mainPanel = new JPanel();
+	static JPanel lispStatusPanel = new JPanel();
 	
 	boolean lispDetected = false;
 	JLabel label = new JLabel("Hallo 1234");
@@ -29,7 +38,22 @@ public class LispDetectionGUI implements ActionListener, AudioAnalyzeGUI{
 	
 	public LispDetectionGUI() {
 		
-		JFrame frame = new JFrame();
+		//Erstelle den Main Frame der Seite
+		createMainFrame();
+		
+	}
+	
+	
+	//In dieser Methode wird der mainFrame der Anwendung erstellt
+	public void createMainFrame() {
+		
+		JLabel headline = new JLabel("Realtime Lisp Detection");
+		
+		
+		JButton startCalibration = new JButton("Kalibrierung");
+		
+		
+		
 		
 		
 		JButton startButton = new JButton("Starte LispDetection");
@@ -38,13 +62,9 @@ public class LispDetectionGUI implements ActionListener, AudioAnalyzeGUI{
 				System.out.println("Starte");
 				audioAnalyzeLogic.callAudioProcessing();
 				
-				
-				
 				System.out.println("Nach aufruf");
 				//Observer einbauen
 				//Oder Die GUI mitgeben dann dann Text dirket im Thread ändern = unschön
-				
-				
 			}
 		});
 		
@@ -55,61 +75,89 @@ public class LispDetectionGUI implements ActionListener, AudioAnalyzeGUI{
 				audioAnalyzeLogic.stopAudioProcessing();
 			}
 		});		
+		
+		
+		
+		
+		//mainPanel.setBorder(BorderFactory.createEmptyBorder(300, 300, 100, 300));
 
-				
-			
+		mainPanel.add(headline);
+		mainPanel.add(startButton);
+		mainPanel.add(stopButton);
+		mainPanel.add(startCalibration);
+		
+		mainPanel.add(label);
 		
 		
+		mainPanel.setLayout(new GridLayout(3, 3));
+		mainPanel.setPreferredSize(new Dimension(800, 500));
+		mainPanel.setVisible(true);
 		
-
-		
-		
-		
-		JPanel panel = new JPanel();
-		
-		panel.setBorder(BorderFactory.createEmptyBorder(300, 300, 100, 300));
-		panel.setLayout(new GridLayout(0, 1));
-		panel.add(startButton);
-		panel.add(stopButton);
-		
-		panel.add(label);
-		
-		frame.add(panel, BorderLayout.CENTER);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setTitle("Meine GUI");
-		frame.pack();
-		frame.setVisible(true);
+		mainFrame.add(mainPanel, BorderLayout.CENTER);
+		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		mainFrame.setTitle("Lisp Detection");
+		mainFrame.pack();
+		mainFrame.setVisible(true);
 		
 		
 		JButton switchButton = new JButton("Ändere label");
 		switchButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				createLispStatusFrame();
 				System.out.println("huhu");
 				label.setText("123");
 			}
 		});
 		
-		panel.add(switchButton);
+		mainPanel.add(switchButton);
 		
 	}
 	
 	
+	public static void createLispStatusFrame() {
+		
+		EventQueue.invokeLater(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                
+                lispStatusFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                /*try 
+                {
+                   UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                } catch (Exception e) {
+                   e.printStackTrace();
+                }*/
+                
+                
+            
+                lispStatusPanel.setSize(300, 300);
+                
+                
+                //static Color red = black;
+                lispStatusPanel.setBackground(Color.green);
+                
+                
+        		lispStatusPanel.setBorder(BorderFactory.createEmptyBorder(300, 300, 100, 300));
+        		lispStatusPanel.setLayout(new GridLayout(0, 1));
+                
+        		lispStatusFrame.add(lispStatusPanel, BorderLayout.CENTER);
+        		//frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        		lispStatusFrame.setTitle("Lisp Status");
+        		lispStatusFrame.pack();
+        		lispStatusFrame.setResizable(true);
+        		lispStatusFrame.setVisible(true);
+        		
+        		
+                       }
+        });
+    }
+		
 	
-	public void sendNotification() {
-		label.setText("true");
-		
-		/*Timer timer = new Timer();
-		TimerTask setLispNotificationToFalse = new TimerTask() {
-			@Override
-			public void run() {
-                System.out.println("das sollte verzögter ausgeführt werden");
-                label.setText("false");
-			}
-		};
-		
-		timer.schedule(setLispNotificationToFalse, 15000);*/
-		
-	}
+	
+	
+	
 	
 	
 	public static void main(String[] args) {
@@ -121,14 +169,6 @@ public class LispDetectionGUI implements ActionListener, AudioAnalyzeGUI{
 		
 		//Setzte in der LispDetectionGUI die AudioAnalyzeLogic
 		lispDetectionGUI.setAudioAnalyzeLogic(audioAnalyzeLogic);
-		
-		
-		
-		
-		
-		
-
-		
 		
 		
 	}
@@ -155,7 +195,22 @@ public class LispDetectionGUI implements ActionListener, AudioAnalyzeGUI{
 	public void audioAnalyzeNotification() {
 		// TODO Auto-generated method stub
 		label.setText("true");
+		//Wenn eine Meldung der AudioAnalyzeLogic kommt dann setze Hintergrundfarbe auf rot
+		lispStatusPanel.setBackground(Color.red);
 		
+		//Erstelle einen Timer
+		//Dieser setzt die HIntergrundfarbe des LispStatusFrames nach 10 Sekunden
+		//wieder auf grün
+		Timer timer = new Timer();
+		TimerTask setLispStatusToFalse = new TimerTask() {
+			@Override
+			public void run() {
+                System.out.println("das sollte verzögter ausgeführt werden");
+                lispStatusPanel.setBackground(Color.green);
+			}
+		};
+		
+		timer.schedule(setLispStatusToFalse, 10000);
 	}
 	
 }

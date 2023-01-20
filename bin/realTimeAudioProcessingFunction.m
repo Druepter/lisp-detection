@@ -1,15 +1,21 @@
-function [m] = realTimeAudioProcessingFunction(mode, params)
+function [i_and_count] = realTimeAudioProcessingFunction(mode, params)
+
+    disp(mode);
+    disp(params);
+
     % REALTIMEAUDIOPROCESSINGFUNCTION
     %
-    % realTimeAudioProcessingFunction("lisp", "1050, 1350", "5500, 6500", "1000, 22050")
+    % realTimeAudioProcessingFunction("lisp", [1050, 5500, 1000; 1350, 6500, 22050])
+    %
+    % realTimeAudioProcessingFunction("noisegate", 0.1)
     %
     % Params:
-    % config file means no params need to get passed
-    % alternatively we do the config file reading separately
-    % and pass the params but this is already done at least
-    %% initialize audio devices
-    % input audio device
-    In = audioDeviceReader;
+    % * mode:   audio processing mode [lisp, noisegate]
+    % * params: parameters for audio processing, mode-dependent
+    %
+    % Returns:
+    % * i_and_count: number of detections once enough detections are made
+    In = audioDeviceReader; % input audio device
     In.Device = "default";
     
     % set frame window in samples
@@ -21,8 +27,8 @@ function [m] = realTimeAudioProcessingFunction(mode, params)
     Out = audioDeviceWriter;
     Out.Device = "default";
     
-
-%     %%Spilt Parameters and convert them to double array
+%% This was how we read the params for lisp detected - leaving here for now
+%     %%Split Parameters and convert them to double array
 %     normalFreqs = strsplit(normalFreqs,',');
 %     normalFreqs = str2double(normalFreqs);
 % 
@@ -42,7 +48,9 @@ function [m] = realTimeAudioProcessingFunction(mode, params)
     i_and_count = [0, 0];
     
 
-    m = true;
+    firstRun = true;
+
+    %mode = "noisegate";
 
     tic
     while toc
@@ -52,14 +60,27 @@ function [m] = realTimeAudioProcessingFunction(mode, params)
          %y = x;
     
          %step(Out, y);
-    
-         % actually run the analyze
-         i_and_count = callAnalyze(mode, i_and_count, x, params);
+
+         % make sure we're not on the first run
+         if firstRun == false
+             % if we aren't then we can fetch the previous run's output
+             i_and_count = fetchOutputs(f);
+         else
+             % note we're no longer on first run
+             firstRun = false;
+         end
 
          % exit the loop by returning
-         if isa(i_and_count, "logical")
+         if length(i_and_count) == 1
+             playSound(i_and_count * 1); % audio notification: count * 1 s
              return
          end
+
+         % run analysis
+         % this is done in the background so we can keep recording while
+         % processing (useful for slower analysis scripts)
+         f = parfeval(backgroundPool, @callAnalyze, 1, mode, ...
+             i_and_count, x, params);
 
     end    
 end

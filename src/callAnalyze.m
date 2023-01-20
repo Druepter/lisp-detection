@@ -1,4 +1,7 @@
 function [i_and_count] = callAnalyze(mode, i_and_count, audio, params)
+
+    disp(mode);
+
     % CALLANALYZE Call an analysis mode
     % 
     % Parameters:
