@@ -2,6 +2,13 @@ function [i_and_count] = realTimeAudioProcessingFunction(mode, params)
 
     disp(mode);
     disp(params);
+    disp(params(:, 1));
+    disp(params(:, 2));
+    disp(params(:, 3));
+
+    %params = [1050, 5500, 1000; 1350, 6500, 22050];
+
+    
 
     % REALTIMEAUDIOPROCESSINGFUNCTION
     %
@@ -16,6 +23,7 @@ function [i_and_count] = realTimeAudioProcessingFunction(mode, params)
     % Returns:
     % * i_and_count: number of detections once enough detections are made
     In = audioDeviceReader; % input audio device
+
     In.Device = "default";
     
     % set frame window in samples
@@ -41,9 +49,7 @@ function [i_and_count] = realTimeAudioProcessingFunction(mode, params)
 % 
 %     %%Build parameter array to pass it into callAnalyze Function
 %     params = [normalFreqs', lispFreqs', restFreqs'];
-    
-    
-    
+
     %% loop over analyze
     i_and_count = [0, 0];
     
@@ -62,25 +68,31 @@ function [i_and_count] = realTimeAudioProcessingFunction(mode, params)
          %step(Out, y);
 
          % make sure we're not on the first run
-         if firstRun == false
+
+         %if firstRun == false
              % if we aren't then we can fetch the previous run's output
-             i_and_count = fetchOutputs(f);
-         else
+         %    i_and_count = fetchOutputs(f);
+         %else
              % note we're no longer on first run
-             firstRun = false;
-         end
+         %    firstRun = false;
+         %end
 
          % exit the loop by returning
-         if length(i_and_count) == 1
-             playSound(i_and_count * 1); % audio notification: count * 1 s
-             return
-         end
+
+         %if length(i_and_count) == 1
+         %    playSound(i_and_count * 1); % audio notification: count * 1 s
+         %    return
+         %end
 
          % run analysis
          % this is done in the background so we can keep recording while
          % processing (useful for slower analysis scripts)
-         f = parfeval(backgroundPool, @callAnalyze, 1, mode, ...
-             i_and_count, x, params);
+
+         %f = parfeval(backgroundPool, @callAnalyze, 1, mode, ...
+         %    i_and_count, x, params);
+
+
+         i_and_count = callAnalyze(mode, i_and_count, x, params);
 
     end    
 end

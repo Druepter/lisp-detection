@@ -60,6 +60,7 @@ public class LispDetectionGUI implements ActionListener, AudioAnalyzeGUI{
 		startButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("Starte");
+				createLispStatusFrame();
 				audioAnalyzeLogic.callAudioProcessing();
 				
 				System.out.println("Nach aufruf");
@@ -201,7 +202,7 @@ public class LispDetectionGUI implements ActionListener, AudioAnalyzeGUI{
 		//Erstelle einen Timer
 		//Dieser setzt die HIntergrundfarbe des LispStatusFrames nach 10 Sekunden
 		//wieder auf grün
-		Timer timer = new Timer();
+		/*Timer timer = new Timer();
 		TimerTask setLispStatusToFalse = new TimerTask() {
 			@Override
 			public void run() {
@@ -210,7 +211,16 @@ public class LispDetectionGUI implements ActionListener, AudioAnalyzeGUI{
 			}
 		};
 		
-		timer.schedule(setLispStatusToFalse, 10000);
+		timer.schedule(setLispStatusToFalse, 15000);*/
+	}
+
+
+	@Override
+	public void matlabEngineLoaded() {
+		// TODO Auto-generated method stub
+		System.out.println("Matlab Engine fertig geladen");
+		lispStatusPanel.setBackground(Color.green);
+		
 	}
 	
 }

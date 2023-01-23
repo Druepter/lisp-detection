@@ -13,6 +13,22 @@ function isLisp = lispAnalyze(audio, normal, lisp, rest)
     % * isLisp, either 0 for nothing detected, 1 for lisp detected, or -1
     %   for correct pronunciation detected.
     disp("analyzing...")
+   
+     
+    
+    % converting params to match required form
+    normal = strsplit(normal,',');
+    normal = str2double(normal);
+
+    lisp = strsplit(lisp,',');
+    lisp = str2double(lisp);
+
+    rest = strsplit(rest,',');
+    rest = str2double(rest);
+    
+    %lisp = str2double(lisp);
+    %rest = str2double(rest);
+
 
     % use standard deviation to detect speech
     % the julia script used a larger audio file as reference
@@ -21,6 +37,7 @@ function isLisp = lispAnalyze(audio, normal, lisp, rest)
     % an alternative to this would be a noise gate or a
     % reference mean found during calibration
     if std(audio) < 0.02
+        disp("Er geht hier rein")
         isLisp = 0;
         return
     end

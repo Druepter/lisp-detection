@@ -6,6 +6,6 @@ public interface AudioAnalyzeGUI {
 
 	public void setAudioAnalyzeLogic(AudioAnalyzeLogic audioAnalyzelogic);
 	public void audioAnalyzeNotification();
-	
+	public void matlabEngineLoaded();
 	
 }

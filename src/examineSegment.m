@@ -8,6 +8,7 @@ function isHit = examineSegment(fftMagnitude, segment, rest)
     % 
     % Returns:
     % * isHit: Logical whether a hit was detected.
+    disp("Jetzt ist er in der Segment Funktion: " + rest(1));
     low = rest(1);
     high = rest(2);
     % normalized bandpass

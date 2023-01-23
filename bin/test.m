@@ -1,10 +1,2 @@
-function [m] = myTest(x)
-    disp(x);
-    disp("jo");
-    disp("1234");
-    m = 5;
-
-    o = 10;
-
-
-end
+realTimeAudioProcessingFunction("lisp", [1050, 5500, 1000; 1350, 6500, 22050]);
+%realTimeAudioProcessingFunction("lisp", "1050, 5500 1000, 1350" "6500, 22050");
