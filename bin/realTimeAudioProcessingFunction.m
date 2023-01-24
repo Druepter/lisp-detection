@@ -61,6 +61,11 @@ function [i_and_count] = realTimeAudioProcessingFunction(mode, params)
     tic
     while toc
 
+         %get variable from Matlab Workspace   
+         varName = evalin('base', 'stopFunction');
+
+         disp("Variable aus Workspace: " + varName);   
+
          disp("Schleife läuft");
          x = step(In);
          %y = x;
@@ -79,10 +84,10 @@ function [i_and_count] = realTimeAudioProcessingFunction(mode, params)
 
          % exit the loop by returning
 
-         %if length(i_and_count) == 1
-         %    playSound(i_and_count * 1); % audio notification: count * 1 s
-         %    return
-         %end
+         if length(i_and_count) == 1
+             playSound(i_and_count * 1); % audio notification: count * 1 s
+             return
+         end
 
          % run analysis
          % this is done in the background so we can keep recording while

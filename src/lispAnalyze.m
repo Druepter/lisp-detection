@@ -25,9 +25,6 @@ function isLisp = lispAnalyze(audio, normal, lisp, rest)
 
     rest = strsplit(rest,',');
     rest = str2double(rest);
-    
-    %lisp = str2double(lisp);
-    %rest = str2double(rest);
 
 
     % use standard deviation to detect speech

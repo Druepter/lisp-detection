@@ -11,6 +11,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -26,9 +27,12 @@ public class LispDetectionGUI implements ActionListener, AudioAnalyzeGUI{
 	
 	static JFrame mainFrame = new JFrame();
 	static JFrame lispStatusFrame = new JFrame();
+	static JFrame loadingFrame = new JFrame();
 	
+	JPanel loadingPanel = new JPanel();
 	JPanel mainPanel = new JPanel();
 	static JPanel lispStatusPanel = new JPanel();
+	
 	
 	boolean lispDetected = false;
 	JLabel label = new JLabel("Hallo 1234");
@@ -38,23 +42,47 @@ public class LispDetectionGUI implements ActionListener, AudioAnalyzeGUI{
 	
 	public LispDetectionGUI() {
 		
-		//Erstelle den Main Frame der Seite
-		createMainFrame();
+		//Erstelle den LoadingFrame, dieser wird zuerst angezeigt
+		createLoadingFrame();
 		
+		//Erstelle den Main Frame der Seite
+		//createMainFrame();
+		
+	}
+	
+	
+	//Hier wird eine Ladeframe erstellt
+	public void createLoadingFrame() {
+		
+		//Hier wird der LoadingSpinner geladen
+		ImageIcon loading = new ImageIcon("spinning-loading.gif");
+		
+		//loadingPanel.add(new JLabel("Anwendung wird geladen... ", loading, JLabel.CENTER));
+		loadingPanel.add(new JLabel(loading));
+		
+		
+		loadingFrame.add(loadingPanel);
+		loadingFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		loadingFrame.setSize(300, 300);
+		loadingFrame.setVisible(true);
 	}
 	
 	
 	//In dieser Methode wird der mainFrame der Anwendung erstellt
 	public void createMainFrame() {
 		
+		
 		JLabel headline = new JLabel("Realtime Lisp Detection");
 		
 		
 		JButton startCalibration = new JButton("Kalibrierung");
-		
-		
-		
-		
+		startCalibration.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+
+				audioAnalyzeLogic.callCalibrate();
+				
+			}
+		});
 		
 		JButton startButton = new JButton("Starte LispDetection");
 		startButton.addActionListener(new ActionListener() {
@@ -202,7 +230,7 @@ public class LispDetectionGUI implements ActionListener, AudioAnalyzeGUI{
 		//Erstelle einen Timer
 		//Dieser setzt die HIntergrundfarbe des LispStatusFrames nach 10 Sekunden
 		//wieder auf grün
-		/*Timer timer = new Timer();
+		Timer timer = new Timer();
 		TimerTask setLispStatusToFalse = new TimerTask() {
 			@Override
 			public void run() {
@@ -211,15 +239,21 @@ public class LispDetectionGUI implements ActionListener, AudioAnalyzeGUI{
 			}
 		};
 		
-		timer.schedule(setLispStatusToFalse, 15000);*/
+		timer.schedule(setLispStatusToFalse, 5000);
 	}
 
 
 	@Override
 	public void matlabEngineLoaded() {
 		// TODO Auto-generated method stub
-		System.out.println("Matlab Engine fertig geladen");
-		lispStatusPanel.setBackground(Color.green);
+		
+		//Wenn die MatlabEngineGeladen ist dann schließe den Ladeframe
+		loadingFrame.dispose();
+		//Erstelle dann den MainFrame
+		createMainFrame();
+		
+		//System.out.println("Matlab Engine fertig geladen");
+		//lispStatusPanel.setBackground(Color.green);
 		
 	}
 	
