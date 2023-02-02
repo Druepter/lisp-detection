@@ -62,9 +62,9 @@ function [i_and_count] = realTimeAudioProcessingFunction(mode, params)
     while toc
 
          %get variable from Matlab Workspace   
-         varName = evalin('base', 'stopFunction');
+         %varName = evalin('base', 'stopFunction');
 
-         disp("Variable aus Workspace: " + varName);   
+        % disp("Variable aus Workspace: " + varName);   
 
          disp("Schleife läuft");
          x = step(In);
@@ -74,13 +74,13 @@ function [i_and_count] = realTimeAudioProcessingFunction(mode, params)
 
          % make sure we're not on the first run
 
-         %if firstRun == false
+         if firstRun == false
              % if we aren't then we can fetch the previous run's output
-         %    i_and_count = fetchOutputs(f);
-         %else
+             i_and_count = fetchOutputs(f);
+         else
              % note we're no longer on first run
-         %    firstRun = false;
-         %end
+             firstRun = false;
+         end
 
          % exit the loop by returning
 
@@ -93,11 +93,11 @@ function [i_and_count] = realTimeAudioProcessingFunction(mode, params)
          % this is done in the background so we can keep recording while
          % processing (useful for slower analysis scripts)
 
-         %f = parfeval(backgroundPool, @callAnalyze, 1, mode, ...
-         %    i_and_count, x, params);
+         f = parfeval(backgroundPool, @callAnalyze, 1, mode, ...
+             i_and_count, x, params);
 
 
-         i_and_count = callAnalyze(mode, i_and_count, x, params);
+         %i_and_count = callAnalyze(mode, i_and_count, x, params);
 
     end    
 end
