@@ -12,9 +12,8 @@ Available modes are:
 Modes are audio processing scripts written in MATLAB.
 To add a mode, e.g. `myMode`, first edit `callAnalyze` to include a block for the mode, which is identified via a string.
 Inside this block, `maxIterations`, the maximum number of consecutive windows to be analyzed before the results are processed, must be defined.
-Additionally, the notification message, `alarmText`, needs to be set.
 Finally, `i_and_count`'s second entry must be changed via the `myModeAnalyze` function.
-This entry is initially set to zero and, after the number of windows given by `maxIterations` is analyzed, this value is compared to whether it is above zero, in which case the `alarmText` is displayed and a notification sound is played.
+This entry is initially set to zero and, after the number of windows given by `maxIterations` is analyzed, this value is compared to whether it is above zero, in which case a notification sound is played and the script restarts.
 
 Next, define the main audio processing function, `myModeAnalyze`, which must take an audio array and analysis parameters as input and output a number to be added to `i_and_count`'s second entry.
 
@@ -25,6 +24,10 @@ The calibration function, `myModeCalibrate`, needs to accept an `audioDeviceRead
 This object is used to read the microphone and create an audio array.
 To change the length of audio used to calibrate, change the `SamplesPerFrame` property of the `audioDeviceReader`.
 The function should output the parameters used for analysis.
+In the case of multiple recordings being required with different instructions, add another block in `callCalibrate` with name `myMode2` with 2 being the number identifying the recording.
+From here, you can run your second calibration.
+Calibration instructions need to be hardcoded in the Java class that calls them:
+TODO.
 
 For simple examples for analysis and calibration functions, look at `noiseGateAnalyze.m` and `noiseGateCalibrate.m`.
 For analysis and calibration function skeletons, look at `exampleAnalyzeSkeleton.m` and `exampleCalibrateSkeleton.m` in the `examples` directory.
