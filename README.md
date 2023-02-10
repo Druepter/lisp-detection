@@ -67,15 +67,15 @@ The block(s) should look something like this:
 
 ```Matlab
 elseif mode == "mymode"
-    params = myModeCalibrate(In, opts);
+    params, name = myModeCalibrate(In, opts);
 elseif mode == "mymode2"
-    params = myModeCalibrate2(In, opts);
+    params, name = myModeCalibrate2(In, opts);
 ```
 
 The calibration function:
 
 ```Matlab
-function param, name = myModeCalibrate(In, name)
+function [param, name] = myModeCalibrate(In, name)
     % set recording length e.g. to 3 seconds
     In.SamplesPerFrame = In.SampleRate * 3;
     % record the audio

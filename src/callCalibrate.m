@@ -1,4 +1,4 @@
-function params = callCalibrate(mode, opts)
+function [params, name] = callCalibrate(mode, opts)
     % CALLCALIBRATE call calibration function
     % 
     % callCalibrate("noisegate")
@@ -12,6 +12,7 @@ function params = callCalibrate(mode, opts)
     %
     % Returns:
     % params: calibration output parameters
+    % name:   parameter name
 
     In = audioDeviceReader;
     In.Device = "default";
@@ -19,9 +20,9 @@ function params = callCalibrate(mode, opts)
     In.SamplesPerFrame = In.SampleRate; 
 
     if mode == "lisp"
-        params = lispCalibrate(In, opts);
+        params, name = lispCalibrate(In, opts);
     elseif mode == "noisegate"
-        params = noiseGateCalibrate(In, opts);
+        params, name = noiseGateCalibrate(In, opts);
     else
         error("Unknown mode passed!")
     end
