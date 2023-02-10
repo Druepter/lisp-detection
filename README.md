@@ -18,7 +18,7 @@ Finally, `i_and_count`'s second entry must be changed via the `myModeAnalyze` fu
 This entry is initially set to zero and, after the number of windows given by `maxIterations` is analyzed, this value is compared to whether it is above zero, in which case a notification sound is played and the script restarts.
 
 How these parameters are passed is defined within the Java method that calls the function. TODO.
-In the case of multiple parameters, these will be passed as vectors or matrices, depending on whether they are grouped. You can parse these in this block if you'd like, or do so in `myModeAnalyze`.
+In the case of multiple parameters, these will be passed as vectors or matrices, depending on whether they are grouped. If necessary, you can parse these in this block or do so in `myModeAnalyze`.
 
 The block in `callAnalyze` should look something like this:
 
