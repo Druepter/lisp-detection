@@ -28,10 +28,12 @@ public class LispDetectionGUI implements ActionListener, AudioAnalyzeGUI{
 	static JFrame mainFrame = new JFrame();
 	static JFrame lispStatusFrame = new JFrame();
 	static JFrame loadingFrame = new JFrame();
+	static JFrame calibrationFrame = new JFrame();
 	
 	JPanel loadingPanel = new JPanel();
 	JPanel mainPanel = new JPanel();
 	static JPanel lispStatusPanel = new JPanel();
+	static JPanel calibrationPanel = new JPanel();
 	
 	
 	boolean lispDetected = false;
@@ -79,8 +81,18 @@ public class LispDetectionGUI implements ActionListener, AudioAnalyzeGUI{
 		startCalibration.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
-				audioAnalyzeLogic.callCalibrate();
+				//Hier neues Fenster aufrufen, welches den Nutzer dazu
+				createCalibrationFrame();
+				//aufordert die Sounds zu machen
+				//Direkt anfangen für 5 Sekunden S sound
+				//Hier auch den mode der kalibierung übergeben
+				//Und dann hier auch die Parameternamen übergeben
+				//Diese werden dann in der callCalibrate in Java in eine Datei geschrieben
 				
+				//Array mit allen Properties für die config Datei
+				String[] properties = {"normalFreqs", "lispFreqs", "restFreqs"};
+				audioAnalyzeLogic.callCalibrate("lisp", properties);
+					
 			}
 		});
 		
@@ -158,15 +170,11 @@ public class LispDetectionGUI implements ActionListener, AudioAnalyzeGUI{
                 } catch (Exception e) {
                    e.printStackTrace();
                 }*/
-                
-                
             
                 lispStatusPanel.setSize(300, 300);
                 
-                
                 //static Color red = black;
                 lispStatusPanel.setBackground(Color.green);
-                
                 
         		lispStatusPanel.setBorder(BorderFactory.createEmptyBorder(300, 300, 100, 300));
         		lispStatusPanel.setLayout(new GridLayout(0, 1));
@@ -183,7 +191,64 @@ public class LispDetectionGUI implements ActionListener, AudioAnalyzeGUI{
         });
     }
 		
+
 	
+	public static void createCalibrationFrame() {
+		
+		EventQueue.invokeLater(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                
+                calibrationFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                /*try 
+                {
+                   UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                } catch (Exception e) {
+                   e.printStackTrace();
+                }*/
+                
+                
+                JLabel sSound = new JLabel("Normaler S-Laut: Mache für die 5 Sekunden einen normalen S laut.");
+             
+                
+                calibrationPanel.setSize(200, 200);
+
+                
+                calibrationPanel.setBorder(BorderFactory.createEmptyBorder(200, 200, 100, 200));
+                //calibrationPanel.setLayout(new GridLayout(3, 3));
+                calibrationPanel.add(sSound);    
+                calibrationFrame.add(calibrationPanel, BorderLayout.CENTER);
+        		//frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        		calibrationFrame.setTitle("Lisp Status");
+        		calibrationFrame.pack();
+        		calibrationFrame.setResizable(true);
+        		calibrationFrame.setVisible(true);
+        		
+        		
+        		Timer timer = new Timer();
+        		TimerTask setCalibartionLabelToSSound = new TimerTask() {
+        			@Override
+        			public void run() {
+        				sSound.setText("Gelispelter S-Laut: Mache für die 5 Sekunden einen gelispelten S laut.");
+        			}
+        		};
+        		
+        		timer.schedule(setCalibartionLabelToSSound, 5000);
+        		
+        		TimerTask setCalibartionLabelToDone = new TimerTask() {
+        			@Override
+        			public void run() {
+        				sSound.setText("Die Kalibrierung ist nun beendet.");
+        			}
+        		};
+        		
+        		timer.schedule(setCalibartionLabelToDone, 10000);
+        		
+                }
+        });
+    }	
 	
 	
 	
@@ -239,7 +304,7 @@ public class LispDetectionGUI implements ActionListener, AudioAnalyzeGUI{
 			}
 		};
 		
-		timer.schedule(setLispStatusToFalse, 5000);
+		timer.schedule(setLispStatusToFalse, 10000);
 	}
 
 

@@ -1,9 +1,12 @@
 package logic;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
 import java.lang.reflect.Array;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
@@ -33,6 +36,7 @@ public class AudioAnalyzeLogic {
 	private static MatlabEngine eng2;
 	
 	Thread audioProcessingThread;
+	Thread calibrationThread;
 	
 	String stopFunction = "false";
 	
@@ -321,31 +325,61 @@ public class AudioAnalyzeLogic {
 	
 	
 	
-	public void callCalibrate() {
+	public void callCalibrate(String mode, String[] properties_key) {
 		
+		System.out.println("huhu");
 		
-		try {
+		//Hier wird ein neuer Thread erstellt, damit die Funktion noch abgebrochen werden kann
+		calibrationThread = new Thread(new Runnable() {
 			
-			//Matlab Funktion wird aufgerufen
-			Object params = eng.feval("callCalibrate", mode);
-			System.out.println(params.toString());
-			
-		} catch (RejectedExecutionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (EngineException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ExecutionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}	
-		
-		
+			public void run() {
+				
+				try {
+					
+					//Matlab Funktion wird aufgerufen
+					double[] properties_value = eng.feval("callCalibrate", mode);
+					
+					//Hier muss das Array in eine ConfigFile geschrieben werden
+					//File configFile = new File("config2.txt");
+					
+					try {
+						PrintWriter writer = new PrintWriter("config.txt", "UTF-8");
+						
+						writer.println("mode = " + mode);
+						
+						//Hier muss die Anzahl der Parameter, welche aus der Matlab Funktion kommt
+						//mit der Anzahl der übergebenen Werte in properties übereinstimmmen
+						for(int i = 0; i < properties_key.length; i++) {
+							writer.println(properties_key[i] + " = " + properties_value[i]);
+						}
+					
+						writer.close();
+
+					} catch (FileNotFoundException ex) {
+					    // file does not exist
+					} catch (IOException ex) {
+					    // I/O error
+					}
+					
+				} catch (EngineException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IllegalArgumentException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IllegalStateException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ExecutionException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}	
+		});
+		calibrationThread.start();
 	}
-	
 
 }
