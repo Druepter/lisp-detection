@@ -1,7 +1,4 @@
 function [i_and_count] = callAnalyze(mode, i_and_count, audio, params)
-
-    disp(mode);
-
     % CALLANALYZE Call an analysis mode
     % 
     % Parameters:
@@ -19,11 +16,6 @@ function [i_and_count] = callAnalyze(mode, i_and_count, audio, params)
         maxIterations = 10;
         % alarm texts can't really be sent out via a backgroundPool worker
         % alarmText = "Lots of lisping!";
-            
-        disp("Paramter im callAnalyze normal: " + params(1));
-         disp("Paramter im callAnalyze normal mit :: " + params(:, 1));
-        disp("Paramter im callAnalyze lsip: " + params(2));
-        disp("Paramter im callAnalyze rest: " + params(3));
 
         % +1 if lisp, -1 if no lisp, 0 else  | NORMAL        LISP          REST (bandpass)
         i_and_count(2) = i_and_count(2) + lispAnalyze(audio, params(:, 1), params(:, 2), params(:, 3));
@@ -31,7 +23,7 @@ function [i_and_count] = callAnalyze(mode, i_and_count, audio, params)
         maxIterations = 1;
         % alarmText = "Volume above noise gate!";
 
-        i_and_count(2) = noiseGateAnalyze(audio, params(1));
+        i_and_count(2) = noiseGateAnalyze(audio, params);
 
     else
         error("Unknown mode passed!")
