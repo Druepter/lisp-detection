@@ -20,9 +20,9 @@ function [params, name] = callCalibrate(mode, opts)
     In.SamplesPerFrame = In.SampleRate; 
 
     if mode == "lisp"
-        params, name = lispCalibrate(In, opts);
+        [name, params] = lispCalibrate(In, opts);
     elseif mode == "noisegate"
-        params, name = noiseGateCalibrate(In, opts);
+        [name, params] = noiseGateCalibrate(In, opts);
     else
         error("Unknown mode passed!")
     end

@@ -1,4 +1,4 @@
-function [name, freqs, restName, restFreqs] = lispCalibrate(In, name)
+function [name, freqs] = lispCalibrate(In, name)
     % LISPCALIBRATE calibrate lisp detection for a voice
     %
     % lispCalibrate(audioDeviceReader, "normalFreqs")
@@ -18,7 +18,6 @@ function [name, freqs, restName, restFreqs] = lispCalibrate(In, name)
 
     % this is just a band pass from 1000 Hz to the highest frequency
     restFreqs = [1000, round(In.SampleRate / 2)];
-    restName = "restFreqs";
 
     audio = step(In);
 

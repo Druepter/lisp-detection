@@ -8,6 +8,7 @@ function [name, threshold] = noiseGateCalibrate(In, name)
     % * name: "threshold" or whatever name for the param
     % 
     % Returns:
+    % * name:      name
     % * threshold: noise gate threshold; 4 * maximum of 2s audio recording
 
     pause(0.5); % sleep for a second before recording - to remove e.g. key presses

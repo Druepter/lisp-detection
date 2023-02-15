@@ -1,4 +1,4 @@
-function isLisp = lispAnalyze(audio, normal, lisp, rest)
+function isLisp = lispAnalyze(audio, normal, lisp)
     % LISPANALYZE Analyze audio array for lisping
     % 
     % lispAnalyze(audio, [1050, 1350], [5500, 6500], [1000, 22050])
@@ -7,15 +7,11 @@ function isLisp = lispAnalyze(audio, normal, lisp, rest)
     % * audio:  audio array to be analyzed
     % * normal: correct pronunciation's frequencies
     % * lisp:   lisp pronunciation's frequencies
-    % * rest:   all frequencies to analyze, used as a bandpass
     %
     % Returns:
     % * isLisp, either 0 for nothing detected, 1 for lisp detected, or -1
     %   for correct pronunciation detected.
-    disp("analyzing...")
    
-     
-    
     % converting params to match required form
     normal = strsplit(normal,',');
     normal = str2double(normal);
@@ -23,9 +19,11 @@ function isLisp = lispAnalyze(audio, normal, lisp, rest)
     lisp = strsplit(lisp,',');
     lisp = str2double(lisp);
 
-    rest = strsplit(rest,',');
-    rest = str2double(rest);
-
+    % audioDeviceReader defaults to 22050 anyway so we don't have to save this
+    % this is the bandpass to be applied
+    rest = [1000 22050];
+    % rest = strsplit(rest,',');
+    % rest = str2double(rest);
 
     % use standard deviation to detect speech
     % the julia script used a larger audio file as reference
