@@ -1,31 +1,25 @@
-function [normalFreqs, lispFreqs, restFreqs] = lispCalibrate(In)
+function [name, freqs] = lispCalibrate(In, name)
     % LISPCALIBRATE calibrate lisp detection for a voice
     %
-    % lispCalibrate(audioDeviceReader)
+    % lispCalibrate(audioDeviceReader, "normalFreqs")
     %
     % Params:
-    % * In: audioDeviceReader object
+    % * In:   audioDeviceReader object
+    % * name: name of the parameter
     %
     % Returns:
-    % * normalFreqs: normal S frequencies
-    % * lispFreqs:   lisped S frequencies
-    % * restFreqs:   band pass frequencies
-
-    In.SamplesPerFrame = In.SampleRate * 2; % 2s recordings
-    disp("For the next 3 seconds, make a normal S sound.")
-    pause(0.5);
+    % * name:      name of frequencies
+    % * freqs:     detected frequencies
+    % * restName:  "restFreqs"
+    % * restFreqs: band pass frequencies
+     
+    % 2s recordings
+    In.SamplesPerFrame = In.SampleRate * 2;
 
     % this is just a band pass from 1000 Hz to the highest frequency
     restFreqs = [1000, round(In.SampleRate / 2)];
 
     audio = step(In);
 
-    normalFreqs = lispCalibrateSegment(audio, restFreqs);
-    
-    disp("For the next 3 seconds, make a lisped S sound.")
-    pause(0.5);
-
-    audio = step(In);
-
-    lispFreqs = lispCalibrateSegment(audio, restFreqs);
+    freqs = lispCalibrateSegment(audio, restFreqs);
 end

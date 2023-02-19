@@ -19,6 +19,8 @@ function [params, name] = callCalibrate(mode, opts)
     % set default frame length to 1 second
     In.SamplesPerFrame = In.SampleRate; 
 
+    disp("In Matlab");
+
     if mode == "lisp"
         [name, params] = lispCalibrate(In, opts);
     elseif mode == "noisegate"

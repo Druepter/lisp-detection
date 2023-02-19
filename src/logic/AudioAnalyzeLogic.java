@@ -33,7 +33,7 @@ public class AudioAnalyzeLogic {
 	
 	private static MatlabEngine eng;
 	
-	private static MatlabEngine eng2;
+	//private static MatlabEngine eng2;
 	
 	Thread audioProcessingThread;
 	Thread calibrationThread;
@@ -46,6 +46,8 @@ public class AudioAnalyzeLogic {
 	String restFreqs = "";
 	
 	double count;
+	
+	boolean matlabEngineLoaded = false;
 	
 	
 	AudioAnalyzeGUI audioAnalyzeGUI;
@@ -66,7 +68,7 @@ public class AudioAnalyzeLogic {
 			//Nur einmal am Anfang muss etwas länger geladen werden
 			eng = MatlabEngine.startMatlab();
 			
-			eng2 = MatlabEngine.startMatlab();
+			//eng2 = MatlabEngine.startMatlab();
 			
 			//Da die Matlab Engine einen absoluten Pfad entgegen nimmt wird hier der absolute Pfad es Projektes ermittelt
 			Path root = FileSystems.getDefault().getPath("").toAbsolutePath();
@@ -75,10 +77,12 @@ public class AudioAnalyzeLogic {
 
 			//Pfad zum Ordner im welchen das Script liegt
 			eng.eval("cd " + rootPath);
-			eng2.eval("cd " + rootPath);
+			//eng2.eval("cd " + rootPath);
 			
 			//Variable zum Abbruch der Matlab Funktion zum Matlab Workspace hinzufügen
-			eng2.putVariable("stopFunction", stopFunction);
+			//eng2.putVariable("stopFunction", stopFunction);
+			
+			audioAnalyzeGUI.matlabEngineLoaded();
 			
 		} catch (EngineException e1) {
 			// TODO Auto-generated catch block
@@ -102,12 +106,6 @@ public class AudioAnalyzeLogic {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
-		//ToDO
-		//Hier die GUI von Ladescreen auf normalen umändern
-		audioAnalyzeGUI.matlabEngineLoaded();
-		
 		
 		
 		
@@ -231,9 +229,21 @@ public class AudioAnalyzeLogic {
 	public void stopAudioProcessing() {
 		
 		try {
-			stopFunction = "true";
-			eng2.putVariable("stopFunction", stopFunction);
-			eng2.eval("test");
+			eng.close();
+			audioAnalyzeGUI.matlabEngineLoading();
+			//Immer wenn die Matlab Engine hier neugestartet wird dann zeige Loading Screen
+			eng = MatlabEngine.startMatlab();
+			//Da die Matlab Engine einen absoluten Pfad entgegen nimmt wird hier der absolute Pfad es Projektes ermittelt
+			Path root = FileSystems.getDefault().getPath("").toAbsolutePath();
+			String rootPath = root.toString();
+			rootPath = rootPath + "\\src";
+
+			//Pfad zum Ordner im welchen das Script liegt
+			eng.eval("cd " + rootPath);
+			
+			//Wenn Matlab Engine fertig geladen ist dann starte main Frame über matlabEngineLoaded
+			audioAnalyzeGUI.matlabEngineLoaded();
+			
 		} catch (CancellationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -243,7 +253,16 @@ public class AudioAnalyzeLogic {
 		} catch (IllegalStateException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MatlabExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MatlabSyntaxException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ExecutionException e) {
@@ -277,7 +296,7 @@ public class AudioAnalyzeLogic {
 			public void run() {
 				
 				try {
-					
+						
 					//Diese Funktion wird dazu genutzt ein Signal zu geben wann Matlab geladen ist
 					//Eine Sekunden später wird dann auch realTimeAudioProcessing geladen sein
 					/*boolean isReady = eng.feval("isReady");	
@@ -324,10 +343,10 @@ public class AudioAnalyzeLogic {
 	}	
 	
 	
-	
-	public void callCalibrate(String mode, String[] properties_key) {
+	//writeMode: soll die bestehende Datei überschrieben werden oder sollen
+	//Werte angehangen werden
+	public void callCalibrate(String mode, String property, String writeMode) {
 		
-		System.out.println("huhu");
 		
 		//Hier wird ein neuer Thread erstellt, damit die Funktion noch abgebrochen werden kann
 		calibrationThread = new Thread(new Runnable() {
@@ -337,23 +356,62 @@ public class AudioAnalyzeLogic {
 				try {
 					
 					//Matlab Funktion wird aufgerufen
-					double[] properties_value = eng.feval("callCalibrate", mode);
-					
-					//Hier muss das Array in eine ConfigFile geschrieben werden
-					//File configFile = new File("config2.txt");
+					double[] property_values = eng.feval("callCalibrate", mode, "lisp");
+
 					
 					try {
-						PrintWriter writer = new PrintWriter("config.txt", "UTF-8");
-						
-						writer.println("mode = " + mode);
-						
-						//Hier muss die Anzahl der Parameter, welche aus der Matlab Funktion kommt
-						//mit der Anzahl der übergebenen Werte in properties übereinstimmmen
-						for(int i = 0; i < properties_key.length; i++) {
-							writer.println(properties_key[i] + " = " + properties_value[i]);
+						//Fall falls die Datei überschrieben werden soll
+						if(writeMode.equals("override")) {
+							PrintWriter writer = new PrintWriter("config.txt", "UTF-8");
+							
+							//Mode kann hier manuell gesetzt werden, da mode immer die
+							//erste Eigenschaft in der Config Datei ist
+							writer.println("mode = " + mode);
+							
+							//Hier wird der andere Teil des Parameters geschrieben
+							writer.print(property + " = ");
+							//Durchlaufe alle Eigenschaften, welche von Matlab zurückgegeben
+							//wurde und schreibe diese hinter den Parameter
+							for(int i = 0; i < property_values.length; i++) {
+								if(i != property_values.length - 1) {
+									writer.print((int)property_values[i] + ", ");
+								}
+								else {
+									writer.print((int)property_values[i]);
+								}
+								
+								
+							}
+							
+							writer.close();
 						}
-					
-						writer.close();
+						else if(writeMode.equals("append")) {
+							//Fall wenn an die Config Datei angehangen werden soll
+							FileWriter fileWriter = new FileWriter("config.txt", true);
+							PrintWriter writer = new PrintWriter(fileWriter);
+							
+							writer.println("");
+							//Hier wird der erste Teil (Key) des Parameters geschrieben
+							writer.print(property + " = ");
+							//Durchlaufe alle Eigenschaften, welche von Matlab zurückgegeben
+							//wurde und schreibe diese hinter den Parameter
+							for(int i = 0; i < property_values.length; i++) {
+								if(i != property_values.length - 1) {
+									writer.print((int)property_values[i] + ", ");
+								}
+								else {
+									writer.print((int)property_values[i]);
+								}
+								
+								
+							}
+							
+							writer.close();
+						}
+						
+						//Hier muss die gerade erstellte Config Datei dann geladen werden
+						loadConfigFile();
+						
 
 					} catch (FileNotFoundException ex) {
 					    // file does not exist

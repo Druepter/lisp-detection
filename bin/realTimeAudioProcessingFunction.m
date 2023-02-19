@@ -1,18 +1,7 @@
 function [i_and_count] = realTimeAudioProcessingFunction(mode, params)
-
-    disp(mode);
-    disp(params);
-    disp(params(:, 1));
-    disp(params(:, 2));
-    disp(params(:, 3));
-
-    %params = [1050, 5500, 1000; 1350, 6500, 22050];
-
-    
-
     % REALTIMEAUDIOPROCESSINGFUNCTION
     %
-    % realTimeAudioProcessingFunction("lisp", [1050, 5500, 1000; 1350, 6500, 22050])
+    % realTimeAudioProcessingFunction("lisp", [1050, 5500; 1350, 6500])
     %
     % realTimeAudioProcessingFunction("noisegate", 0.1)
     %

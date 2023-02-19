@@ -7,6 +7,7 @@ import java.awt.EventQueue;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -16,28 +17,26 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.UIManager;
-
 import logic.AudioAnalyzeLogic;
 
 //Klasse für die GUI der LispDetection
 public class LispDetectionGUI implements ActionListener, AudioAnalyzeGUI{
 
-	AudioAnalyzeLogic audioAnalyzeLogic;
+	static AudioAnalyzeLogic audioAnalyzeLogic;
 	
 	static JFrame mainFrame = new JFrame();
 	static JFrame lispStatusFrame = new JFrame();
 	static JFrame loadingFrame = new JFrame();
 	static JFrame calibrationFrame = new JFrame();
 	
-	JPanel loadingPanel = new JPanel();
-	JPanel mainPanel = new JPanel();
+	static JPanel loadingPanel = new JPanel();
+	static JPanel mainPanel = new JPanel();
 	static JPanel lispStatusPanel = new JPanel();
 	static JPanel calibrationPanel = new JPanel();
 	
 	
 	boolean lispDetected = false;
-	JLabel label = new JLabel("Hallo 1234");
+
 
 	
 	
@@ -46,6 +45,9 @@ public class LispDetectionGUI implements ActionListener, AudioAnalyzeGUI{
 		
 		//Erstelle den LoadingFrame, dieser wird zuerst angezeigt
 		createLoadingFrame();
+		createMainFrame();
+		//mainFrame.setVisible(false);
+		
 		
 		//Erstelle den Main Frame der Seite
 		//createMainFrame();
@@ -61,12 +63,13 @@ public class LispDetectionGUI implements ActionListener, AudioAnalyzeGUI{
 		
 		//loadingPanel.add(new JLabel("Anwendung wird geladen... ", loading, JLabel.CENTER));
 		loadingPanel.add(new JLabel(loading));
-		
-		
+		loadingPanel.setLayout(new GridLayout(1, 1));
+		loadingFrame.setTitle("Anwendnung lädt...");
 		loadingFrame.add(loadingPanel);
 		loadingFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		loadingFrame.setSize(300, 300);
 		loadingFrame.setVisible(true);
+		loadingFrame.setResizable(true);
 	}
 	
 	
@@ -74,45 +77,32 @@ public class LispDetectionGUI implements ActionListener, AudioAnalyzeGUI{
 	public void createMainFrame() {
 		
 		
-		JLabel headline = new JLabel("Realtime Lisp Detection");
+		
 		
 		
 		JButton startCalibration = new JButton("Kalibrierung");
 		startCalibration.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
 				//Hier neues Fenster aufrufen, welches den Nutzer dazu
+				//In diesem wird auch die Kalibrierung aufgerufen
 				createCalibrationFrame();
-				//aufordert die Sounds zu machen
-				//Direkt anfangen für 5 Sekunden S sound
-				//Hier auch den mode der kalibierung übergeben
-				//Und dann hier auch die Parameternamen übergeben
-				//Diese werden dann in der callCalibrate in Java in eine Datei geschrieben
-				
-				//Array mit allen Properties für die config Datei
-				String[] properties = {"normalFreqs", "lispFreqs", "restFreqs"};
-				audioAnalyzeLogic.callCalibrate("lisp", properties);
 					
 			}
 		});
 		
-		JButton startButton = new JButton("Starte LispDetection");
-		startButton.addActionListener(new ActionListener() {
+		JButton startLispDetection = new JButton("Starte LispDetection");
+		startLispDetection.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("Starte");
+				//Erstelle den LispStatusFrame
 				createLispStatusFrame();
-				audioAnalyzeLogic.callAudioProcessing();
 				
-				System.out.println("Nach aufruf");
-				//Observer einbauen
-				//Oder Die GUI mitgeben dann dann Text dirket im Thread ändern = unschön
 			}
 		});
 		
-		JButton stopButton = new JButton("Stoppe LispDetection");
-		stopButton.addActionListener(new ActionListener() {
+		JButton stopLispDetection = new JButton("Stoppe LispDetection");
+		stopLispDetection.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("Stoppe");
+				//Stoppe die Lisp Detection
 				audioAnalyzeLogic.stopAudioProcessing();
 			}
 		});		
@@ -122,35 +112,21 @@ public class LispDetectionGUI implements ActionListener, AudioAnalyzeGUI{
 		
 		//mainPanel.setBorder(BorderFactory.createEmptyBorder(300, 300, 100, 300));
 
-		mainPanel.add(headline);
-		mainPanel.add(startButton);
-		mainPanel.add(stopButton);
+		mainPanel.add(startLispDetection);
+		mainPanel.add(stopLispDetection);
 		mainPanel.add(startCalibration);
 		
-		mainPanel.add(label);
 		
-		
-		mainPanel.setLayout(new GridLayout(3, 3));
+		mainPanel.setLayout(new GridLayout(2, 2));
 		mainPanel.setPreferredSize(new Dimension(800, 500));
 		mainPanel.setVisible(true);
-		
+		mainPanel.setBackground(Color.white);
 		mainFrame.add(mainPanel, BorderLayout.CENTER);
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		mainFrame.setTitle("Lisp Detection");
 		mainFrame.pack();
-		mainFrame.setVisible(true);
+		mainFrame.setVisible(false);
 		
-		
-		JButton switchButton = new JButton("Ändere label");
-		switchButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				createLispStatusFrame();
-				System.out.println("huhu");
-				label.setText("123");
-			}
-		});
-		
-		mainPanel.add(switchButton);
 		
 	}
 	
@@ -162,6 +138,8 @@ public class LispDetectionGUI implements ActionListener, AudioAnalyzeGUI{
             @Override
             public void run()
             {
+            	//Call Audio Processing
+            	audioAnalyzeLogic.callAudioProcessing();
                 
                 lispStatusFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                 /*try 
@@ -195,47 +173,41 @@ public class LispDetectionGUI implements ActionListener, AudioAnalyzeGUI{
 	
 	public static void createCalibrationFrame() {
 		
-		EventQueue.invokeLater(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                
+				//Hier wird zunächst callCalibrate mit normalen Frequenzen aufgerufen
+				//Hier mit dem Parameter override um die bestehende config-Datei zu
+				//überschreiben
+				audioAnalyzeLogic.callCalibrate("lisp", "normalFreqs", "override");
+			         	
                 calibrationFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-                /*try 
-                {
-                   UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-                } catch (Exception e) {
-                   e.printStackTrace();
-                }*/
                 
-                
-                JLabel sSound = new JLabel("Normaler S-Laut: Mache für die 5 Sekunden einen normalen S laut.");
+                //Als erstes soll ein normaler S-Laut für die nächsten 7 Sekunden gemacht werden
+                JLabel sSound = new JLabel("Normaler S-Laut: Mache für sieben Sekunden einen normalen S laut.");
              
-                
                 calibrationPanel.setSize(200, 200);
-
+                calibrationPanel.setBackground(Color.white);
                 
-                calibrationPanel.setBorder(BorderFactory.createEmptyBorder(200, 200, 100, 200));
+                calibrationPanel.setBorder(BorderFactory.createEmptyBorder(100, 100, 100, 100));
                 //calibrationPanel.setLayout(new GridLayout(3, 3));
                 calibrationPanel.add(sSound);    
                 calibrationFrame.add(calibrationPanel, BorderLayout.CENTER);
         		//frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        		calibrationFrame.setTitle("Lisp Status");
+        		calibrationFrame.setTitle("Kalibrierung");
         		calibrationFrame.pack();
-        		calibrationFrame.setResizable(true);
+        		calibrationFrame.setResizable(false);
         		calibrationFrame.setVisible(true);
         		
         		
+				//Erstelle einen neuen Timer -> für 7 Sekunden einen gelispelten S-Laut machen
         		Timer timer = new Timer();
         		TimerTask setCalibartionLabelToSSound = new TimerTask() {
         			@Override
         			public void run() {
-        				sSound.setText("Gelispelter S-Laut: Mache für die 5 Sekunden einen gelispelten S laut.");
+        				sSound.setText("Gelispelter S-Laut: Mache für die sieben Sekunden einen gelispelten S laut.");
         			}
         		};
-        		
-        		timer.schedule(setCalibartionLabelToSSound, 5000);
+        		timer.schedule(setCalibartionLabelToSSound, 7000);
+        		//Hier der gelispelte S-Laut
+        		audioAnalyzeLogic.callCalibrate("lisp", "lispFreqs", "append");
         		
         		TimerTask setCalibartionLabelToDone = new TimerTask() {
         			@Override
@@ -244,10 +216,10 @@ public class LispDetectionGUI implements ActionListener, AudioAnalyzeGUI{
         			}
         		};
         		
-        		timer.schedule(setCalibartionLabelToDone, 10000);
+        		timer.schedule(setCalibartionLabelToDone, 14000);
         		
-                }
-        });
+                
+       
     }	
 	
 	
@@ -288,7 +260,7 @@ public class LispDetectionGUI implements ActionListener, AudioAnalyzeGUI{
 	@Override
 	public void audioAnalyzeNotification() {
 		// TODO Auto-generated method stub
-		label.setText("true");
+		
 		//Wenn eine Meldung der AudioAnalyzeLogic kommt dann setze Hintergrundfarbe auf rot
 		lispStatusPanel.setBackground(Color.red);
 		
@@ -299,7 +271,6 @@ public class LispDetectionGUI implements ActionListener, AudioAnalyzeGUI{
 		TimerTask setLispStatusToFalse = new TimerTask() {
 			@Override
 			public void run() {
-                System.out.println("das sollte verzögter ausgeführt werden");
                 lispStatusPanel.setBackground(Color.green);
 			}
 		};
@@ -308,17 +279,35 @@ public class LispDetectionGUI implements ActionListener, AudioAnalyzeGUI{
 	}
 
 
+	
+	
 	@Override
-	public void matlabEngineLoaded() {
-		// TODO Auto-generated method stub
+	public void matlabEngineLoaded() {	
 		
 		//Wenn die MatlabEngineGeladen ist dann schließe den Ladeframe
+		loadingFrame.setVisible(false);
 		loadingFrame.dispose();
+		loadingFrame = null;
 		//Erstelle dann den MainFrame
-		createMainFrame();
+		//Erstelle diesen schon ehr aber setzte hier nur ob dieser Sichtbar ist
+		mainFrame.setVisible(true);
 		
-		//System.out.println("Matlab Engine fertig geladen");
-		//lispStatusPanel.setBackground(Color.green);
+		
+	}
+
+
+	@Override
+	public void matlabEngineLoading() {
+		
+		//Wenn die Matlab Engine läd dann schließe den Main Frame
+		mainFrame.setVisible(false);
+		//Öffene den Loading Frame
+		//Der Loading Spinner lädt nicht neu -> keine Ahnung warum. Sollte eigentlich klappen
+		loadingFrame = new JFrame();
+		loadingPanel = new JPanel();
+		createLoadingFrame();
+		//loadingFrame.setVisible(true);
+		
 		
 	}
 	
