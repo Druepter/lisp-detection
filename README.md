@@ -173,4 +173,6 @@ The calibration defined in MATLAB need to be called from the GUI class, in this 
 
 Calibration instructions can displayed to the user in a new GUI frame. Loading the configuration file is automatically handeled by `AudioAnalyzeLogic`. 
 
+#### Examples
 
+For examples of an implemnation look at the class `LispDetectionGUI` or `NoiseGateGUI`.
