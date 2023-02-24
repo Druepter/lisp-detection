@@ -1,6 +1,6 @@
 # lisp_detection
 
-## Modes
+## Matlab
 
 Available modes are:
 
@@ -108,3 +108,71 @@ realTimeAudioProcessingFunction("mymode", parameter)
 
 For simple examples for analysis and calibration functions, look at `noiseGateAnalyze.m` and `noiseGateCalibrate.m`.
 For analysis and calibration function skeletons, look at `exampleAnalyzeSkeleton.m` and `exampleCalibrateSkeleton.m` in the `examples` directory.
+
+
+
+## Java
+
+### Adding modes
+
+#### Analysis
+
+The next step is to update the Java sourcecode. The class 'AudioAnalyzeLogic' contains the bridge to the MATLAB sourcecode and never needs to be modified. This class calls methods, within the Graphic User Interface, automatically when the audio analyze event in MATLAB is triggerd. So first of all a new Grafic User Interface, desinged for the new mode, needs to be added. For this a new instance of the Interface `AudioAnalyzeGUI` must be created, e.g. named `myModeGUI`. There are five methods that must be overwritten. 
+
+1. `MyModeGUI` needs an object of the class `AudioAnalyzeLogic` to commuicate with the sourcecode written in MATLAB. The method `setAudioAnalyzeLogic` is used            to set the object.
+2. `audioAnalyzeNotification` is called automatically when the audio analyze event is triggered. Use this method to update the GUI based on the purpose of the            new mode.
+3. To load MATLAB sourcecode from java the MATLAB Engine in java must be started. This takes a few moments. `matlabEngineLoading` is automatically called
+        when the MATLAB Engine begins to load, e.g. used to create a loading screen.
+4. `matlabEngineLoaded` is called automatically when the MATLAB Eninge is ready to been used, e.g. used to end the loading screen.
+5. `getConfigFileName` is called automatically by `AudioAnalyzeLogic` to create a configuration file. Read more in chapter Calibration. `myModeGUI` needs a              variable that contains the name of the configuration file.
+
+All in all there a no limitations on how to design and create the new GUI. But it is recommanded to use the GUI widget toolkit `Swing` for an easy implementation. 
+
+#### Mode Selection
+
+If it is desired to keep the exsisting mode selection menu it is necessary to use `Swing`. To add the new mode to the mode selection menu a new `JButton` must be created within the function `createModeSelectionFrame` in class `ModeSelection`. When the button is pressed the previously described GUI must be created.  
+
+Here is an example of the implementation of the new button:
+
+```Java
+JButton lispDetection = new JButton("LispDetection");
+lispDetection.addActionListener(new ActionListener() {
+    public void actionPerformed(ActionEvent e) {
+        Thread modeSelectionThread = new Thread(new Runnable() {
+            public void run() {
+                modeSelectionFrame.dispose();
+                try {
+                    MyModeGUI myModeGUI = new MyModeGUI();
+                    AudioAnalyzeLogic audioAnalyzeLogic;
+
+                    audioAnalyzeLogic = new AudioAnalyzeLogic(myModeGUI);
+                    myModeGUI.setAudioAnalyzeLogic(audioAnalyzeLogic);
+                } 
+                catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    ErrorGUI errorGUI = new ErrorGUI("Your Error Message");
+                    e.printStackTrace();
+                }
+            }
+        });
+        modeSelectionThread.start();	
+    }
+});
+```
+
+An object of `MyModeGUI` and an object of `AudioAnalyzeLogic` must be created. The object of `MyModeGUI` is passed to the object of `AudioAnalyzeLogic`. `setAudioAnalyzeLogic` of `myModeGUI` is called with `audioAnalyzeLogic` as parameter. So both of the objects know each other and can communicate. The creation of the objects takes place in a new Thread to provide further user interfaction, while calling the MATLAB Engine on `audioAnalyzeLogic` creation, which takes a few moments. If an error occurs the Exception is catched here. A special error GUI is created, which creates a new frame containing the error Message.
+
+#### Calibration
+
+The calibration defined in MATLAB need to be called from the GUI class, in this example from the class `myModeGUI`, by calling the method `callCalibrate`  contained in `AudioAnalyzeLogic`. The method `callCalibrate` receives output from MATLABs callCalibrate and writes the output to a file. For this `callCalibrate` has four parameters.
+
+1. `mode` is a String contains the name of the mode, e.g. `lisp` or `noisegate`
+2. `property` is a String contains the property(key) that needs to be written to the configuration file.
+3. `wirteMode` is a String that defines the handling of the configuration file. 'overwrite' for overwriting the existing configuration file and 'append' for             appending to the exsisting configuration file.
+4. `configFileName` is a String containing the name of the configuration file. Configuration file needs to be in the root of the project. Every mode has its own         configuration file and needs an example file at the first start of the application.
+
+Calibration instructions can displayed to the user in a new GUI frame. Loading the configuration file is automatically handeled by `AudioAnalyzeLogic`. 
+
+#### Examples
+
+For examples of an implemnation look at the class `LispDetectionGUI` or `NoiseGateGUI`.
