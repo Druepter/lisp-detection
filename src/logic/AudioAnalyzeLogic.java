@@ -318,7 +318,7 @@ public class AudioAnalyzeLogic {
 					
 					try {
 						//Fall falls die Datei überschrieben werden soll
-						if(writeMode.equals("override")) {
+						if(writeMode.equals("overwrite")) {
 							PrintWriter writer = new PrintWriter(configFileName, "UTF-8");
 							
 							//Mode kann hier manuell gesetzt werden, da mode immer die

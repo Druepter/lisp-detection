@@ -184,7 +184,7 @@ public class LispDetectionGUI implements ActionListener, AudioAnalyzeGUI{
 		//Hier wird zunächst callCalibrate mit normalen Frequenzen aufgerufen
 		//Hier mit dem Parameter override um die bestehende config-Datei zu
 		//überschreiben
-		audioAnalyzeLogic.callCalibrate("lisp", "normalFreqs", "override", configFileName);
+		audioAnalyzeLogic.callCalibrate("lisp", "normalFreqs", "overwrite", configFileName);
 	         	
         calibrationFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         
