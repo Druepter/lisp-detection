@@ -1,0 +1,3 @@
+mode = lisp
+normalFreqs = 1052, 1352
+lispFreqs = 5517, 6514
