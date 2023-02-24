@@ -28,4 +28,5 @@ function [params, name] = callCalibrate(mode, opts)
     else
         error("Unknown mode passed!")
     end
+    params = [params];
 end
