@@ -1,6 +1,6 @@
 # lisp_detection
 
-## Modes
+## Matlab
 
 Available modes are:
 
@@ -161,5 +161,16 @@ lispDetection.addActionListener(new ActionListener() {
 ```
 
 An object of `MyModeGUI` and an object of `AudioAnalyzeLogic` must be created. The object of `MyModeGUI` is passed to the object of `AudioAnalyzeLogic`. `setAudioAnalyzeLogic` of `myModeGUI` is called with `audioAnalyzeLogic` as parameter. So both of the objects know each other and can communicate. The creation of the objects takes place in a new Thread to provide further user interfaction, while calling the MATLAB Engine on `audioAnalyzeLogic` creation, which takes a few moments. If an error occurs the Exception is catched here. A special error GUI is created, which creates a new frame containing the error Message.
+
+#### Calibration
+
+The calibration defined in MATLAB need to be called from the GUI class, in this example from the class `myModeGUI`, by calling the method `callCalibrate`  contained in `AudioAnalyzeLogic`. The method `callCalibrate` receives output from MATLABs callCalibrate and writes the output to a file. For this `callCalibrate` has four parameters.
+
+1. `mode` is a String contains the name of the mode, e.g. `lisp` or `noisegate`
+2. `property` is a String contains the property(key) that needs to be written to the configuration file.
+3. `wirteMode` is a String that defines the handling of the configuration file. 'overwrite' for overwriting the existing configuration file and 'append' for             appending to the exsisting configuration file.
+4. `configFileName` is a String containing the name of the configuration file. Configuration file needs to be in the root of the project. Every mode has its own         configuration file and needs an example file at the first start of the application.
+
+Calibration instructions can displayed to the user in a new GUI frame. Loading the configuration file is automatically handeled by `AudioAnalyzeLogic`. 
 
 
