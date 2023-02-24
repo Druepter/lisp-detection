@@ -108,3 +108,25 @@ realTimeAudioProcessingFunction("mymode", parameter)
 
 For simple examples for analysis and calibration functions, look at `noiseGateAnalyze.m` and `noiseGateCalibrate.m`.
 For analysis and calibration function skeletons, look at `exampleAnalyzeSkeleton.m` and `exampleCalibrateSkeleton.m` in the `examples` directory.
+
+
+
+## Java
+
+### Adding modes
+
+#### Analysis
+
+The next step is to update the java sourcecode. The class 'AudioAnalyzeLogic' contains the bridge to the MATLAB sourcecode and never needs to be modified. This class calls methods within the Graphic User Interface automatically when the audio analyze event in MATLAB is triggerd. So first of all a new Grafic User Interface desinged for the new mode needs to be added. For this a new instance of the Interface `AudioAnalyzeGUI` must be created, e.g. named `myModeGUI`. There are five methods that must be overwritten. 
+
+
+1. `myModeGUI` needs an object of the class `AudioAnalyzeLogic` to commuicate with the sourcecode written in MATLAB. The method `setAudioAnalyzeLogic` is used            to set the object.
+2. `audioAnalyzeNotification` is called automatically when the audio analyze event is triggered. Use this method to update the GUI based on the purpose of the            new mode.
+3. To load MATLAB sourcecode from java the MATLAB Engine in java must be started. This takes a few moments. `matlabEngineLoading` is automatically called
+        when the MATLAB Engine begins to load, e.g. used to create a loading screen.
+4. `matlabEngineLoaded` is called automatically when the MATLAB Eninge is ready to been used, e.g. used to end the loading screen.
+5. `getConfigFileName` is called automatically by `AudioAnalyzeLogic` to create a configuration file. Read more in chapter Calibration. `myModeGUI` needs a              variable that contains the name of the configuration file.
+    
+
+
+
