@@ -1,0 +1,3 @@
+mode = noisegate
+normalFreqs = 1003, 3358
+lispFreqs = 1002, 5436

@@ -23,27 +23,27 @@ import javax.swing.JPanel;
 import logic.AudioAnalyzeLogic;
 
 //Klasse für die GUI der LispDetection
-public class LispDetectionGUI implements ActionListener, AudioAnalyzeGUI{
+public class NoiseGateGUI implements ActionListener, AudioAnalyzeGUI{
 
 	static AudioAnalyzeLogic audioAnalyzeLogic;
 	
 	static JFrame mainFrame = new JFrame();
-	static JFrame lispStatusFrame = new JFrame();
+	static JFrame noiseStatusFrame = new JFrame();
 	static JFrame loadingFrame = new JFrame();
 	static JFrame calibrationFrame = new JFrame();
 	
 	static JPanel loadingPanel = new JPanel();
 	static JPanel mainPanel = new JPanel();
-	static JPanel lispStatusPanel = new JPanel();
+	static JPanel noiseStatusPanel = new JPanel();
 	static JPanel calibrationPanel = new JPanel();
 	
 	
-	boolean lispDetected = false;
+	boolean noiseDetected = false;
 
-	static String configFileName = "configLispDetection.txt";
+	static String configFileName = "configNoiseGate.txt";
 
 	
-	public LispDetectionGUI() {
+	public NoiseGateGUI() {
 		
 		//Erstelle den LoadingFrame, dieser wird zuerst angezeigt
 		createLoadingFrame();
@@ -89,7 +89,7 @@ public class LispDetectionGUI implements ActionListener, AudioAnalyzeGUI{
 			}
 		});
 		
-		JButton startLispDetection = new JButton("Start Lisp Detection");
+		JButton startLispDetection = new JButton("Start Noise Detection");
 		startLispDetection.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//Erstelle den LispStatusFrame
@@ -98,7 +98,7 @@ public class LispDetectionGUI implements ActionListener, AudioAnalyzeGUI{
 			}
 		});
 		
-		JButton stopLispDetection = new JButton("Stop Lisp Detection");
+		JButton stopLispDetection = new JButton("Stop Noise Detection");
 		stopLispDetection.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//Stoppe die Lisp Detection
@@ -120,7 +120,7 @@ public class LispDetectionGUI implements ActionListener, AudioAnalyzeGUI{
 		mainPanel.setBackground(Color.white);
 		mainFrame.add(mainPanel, BorderLayout.CENTER);
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		mainFrame.setTitle("Lisp Detection");
+		mainFrame.setTitle("Noise Detection");
 		mainFrame.pack();
 		mainFrame.setVisible(false);
 		
@@ -138,7 +138,7 @@ public class LispDetectionGUI implements ActionListener, AudioAnalyzeGUI{
             	//Call Audio Processing
             	audioAnalyzeLogic.callAudioProcessing();
                 
-                lispStatusFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                noiseStatusFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                 /*try 
                 {
                    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -146,28 +146,28 @@ public class LispDetectionGUI implements ActionListener, AudioAnalyzeGUI{
                    e.printStackTrace();
                 }*/
             
-                lispStatusPanel.setSize(300, 300);
+                noiseStatusPanel.setSize(300, 300);
                 
                 //static Color red = black;
-                lispStatusPanel.setBackground(Color.green);
+                noiseStatusPanel.setBackground(Color.green);
                 
-        		lispStatusPanel.setBorder(BorderFactory.createEmptyBorder(300, 300, 100, 300));
-        		lispStatusPanel.setLayout(new GridLayout(0, 1));
+        		noiseStatusPanel.setBorder(BorderFactory.createEmptyBorder(300, 300, 100, 300));
+        		noiseStatusPanel.setLayout(new GridLayout(0, 1));
                 
-        		lispStatusFrame.add(lispStatusPanel, BorderLayout.CENTER);
+        		noiseStatusFrame.add(noiseStatusPanel, BorderLayout.CENTER);
         		//frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        		lispStatusFrame.setTitle("Lisp Status");
-        		lispStatusFrame.pack();
-        		lispStatusFrame.setResizable(true);
-        		lispStatusFrame.setVisible(true);
+        		noiseStatusFrame.setTitle("Lisp Status");
+        		noiseStatusFrame.pack();
+        		noiseStatusFrame.setResizable(true);
+        		noiseStatusFrame.setVisible(true);
         		
  
-        		lispStatusFrame.addWindowListener(new WindowAdapter(){
+        		noiseStatusFrame.addWindowListener(new WindowAdapter(){
         	        public void windowClosing(WindowEvent e){
         	            //int i=JOptionPane.showConfirmDialog(null, "Seguro que quiere salir?");
         	            //if(i==0)
         	                //System.exit(0);//cierra aplicacion
-        	        	lispStatusFrame.dispose();
+        	        	noiseStatusFrame.dispose();
         	        	audioAnalyzeLogic.stopAudioProcessing();
         	        	
         	        }
@@ -184,12 +184,12 @@ public class LispDetectionGUI implements ActionListener, AudioAnalyzeGUI{
 		//Hier wird zunächst callCalibrate mit normalen Frequenzen aufgerufen
 		//Hier mit dem Parameter override um die bestehende config-Datei zu
 		//überschreiben
-		audioAnalyzeLogic.callCalibrate("lisp", "normalFreqs", "override", configFileName);
+		audioAnalyzeLogic.callCalibrate("noisegate", "threshold", "override", configFileName);
 	         	
         calibrationFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         
-        //Als erstes soll ein normaler S-Laut für die nächsten 7 Sekunden gemacht werden
-        JLabel sSound = new JLabel("Normal S-Sound: Please make an normal s-sound for the next seven seconds.");
+        //Threshold muss überschritten werden
+        JLabel sSound = new JLabel("Please make loud noise.");
      
         calibrationPanel.setSize(200, 200);
         calibrationPanel.setBackground(Color.white);
@@ -204,31 +204,7 @@ public class LispDetectionGUI implements ActionListener, AudioAnalyzeGUI{
 		calibrationFrame.setResizable(false);
 		calibrationFrame.setVisible(true);
 		
-		
-		//Erstelle einen neuen Timer -> für 7 Sekunden einen gelispelten S-Laut machen
-		Timer timer = new Timer();
-		TimerTask setCalibartionLabelToSSound = new TimerTask() {
-			@Override
-			public void run() {
-				sSound.setText("Lisp S-Sound: Please make a lisp s-sound for the next seven seconds.");
-        		//Hier der gelispelte S-Laut
-        		audioAnalyzeLogic.callCalibrate("lisp", "lispFreqs", "append", configFileName);
-			}
-		};
-		timer.schedule(setCalibartionLabelToSSound, 7000);
-
-		
-		TimerTask setCalibartionLabelToDone = new TimerTask() {
-			@Override
-			public void run() {
-				sSound.setText("Die Kalibrierung ist nun beendet.");
-			}
-		};
-		
-		timer.schedule(setCalibartionLabelToDone, 14000);
-		
-        
-       
+   
     }	
 
 
@@ -254,7 +230,7 @@ public class LispDetectionGUI implements ActionListener, AudioAnalyzeGUI{
 		// TODO Auto-generated method stub
 		
 		//Wenn eine Meldung der AudioAnalyzeLogic kommt dann setze Hintergrundfarbe auf rot
-		lispStatusPanel.setBackground(Color.red);
+		noiseStatusPanel.setBackground(Color.red);
 		
 		//Erstelle einen Timer
 		//Dieser setzt die HIntergrundfarbe des LispStatusFrames nach 10 Sekunden
@@ -263,7 +239,7 @@ public class LispDetectionGUI implements ActionListener, AudioAnalyzeGUI{
 		TimerTask setLispStatusToFalse = new TimerTask() {
 			@Override
 			public void run() {
-                lispStatusPanel.setBackground(Color.green);
+                noiseStatusPanel.setBackground(Color.green);
 			}
 		};
 		

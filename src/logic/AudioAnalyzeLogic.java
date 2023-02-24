@@ -58,7 +58,7 @@ public class AudioAnalyzeLogic {
 	
 	
 	
-	public AudioAnalyzeLogic(AudioAnalyzeGUI audioAnalyzeGUI) {
+	public AudioAnalyzeLogic(AudioAnalyzeGUI audioAnalyzeGUI) throws IOException {
 		
 		this.audioAnalyzeGUI = audioAnalyzeGUI;
 		
@@ -136,85 +136,33 @@ public class AudioAnalyzeLogic {
 	}
 	
 	//Lade bestehende Config Datei aus Filesystem
-	public void loadConfigFile() {
+	public void loadConfigFile() throws IOException{
 		
 		//Properties p = new Properties();
 		
-		try {
 			
-			Map<String,String> properties = getOrderedProperties(new FileInputStream("config.txt"));
-			
-			//Hier wird einer abgezogen, da der mode in einer extra variable gespeichert wird
-			paramsArray = new String[properties.size() - 1];
-			
-			//Properties aus Datei werden gelesen und in Array überführt
-			//Matlab nimmt keine Map an deshalb müssen die Werte in ein Array gespeichert werden
-			int i = 0;
-			for (Map.Entry<String, String> entry : properties.entrySet()) {
-			    System.out.println(entry.getKey() + "/" + entry.getValue());
-			    if(!entry.getKey().equals("mode")) {
-				    paramsArray[i] = entry.getValue();
-				    i = i + 1;	
-			    }
-			    else {
-			    	mode = entry.getValue();
-			    }
+		Map<String,String> properties = getOrderedProperties(new FileInputStream(audioAnalyzeGUI.getConfigFileName()));
+		
+		//Hier wird einer abgezogen, da der mode in einer extra variable gespeichert wird
+		paramsArray = new String[properties.size() - 1];
+		
+		//Properties aus Datei werden gelesen und in Array überführt
+		//Matlab nimmt keine Map an deshalb müssen die Werte in ein Array gespeichert werden
+		int i = 0;
+		for (Map.Entry<String, String> entry : properties.entrySet()) {
+		    System.out.println(entry.getKey() + "/" + entry.getValue());
+		    if(!entry.getKey().equals("mode")) {
+			    paramsArray[i] = entry.getValue();
+			    i = i + 1;	
+		    }
+		    else {
+		    	mode = entry.getValue();
+		    }
 
-			    //paramsArrayList.add(entry.getValue());
-			}
+		    //paramsArrayList.add(entry.getValue());
+		}
 			
-			//Da der Mode immmer benötigt wird und immer an erster Stelle der Parameter stehen soll wird
-			//dieser hier extra ausgelesen und übergeben
-			//mode = paramsArray[0];
-			
-			
-			
-			/*p.load(new FileInputStream("config.txt"));
-			
-			//Interation über alle Parameter die in der Config Datei gespeichert sind
-			for(String key : p.stringPropertyNames()) {
-				System.out.println(key);
-				//Hole jeweils den Wert des Keys
-				String value = p.getProperty(key);
-				//Speichere Parameter in einer ArrayList
-				//Da der Mode jedes mal gebraucht wird, wird dieser später seperat ausgelesen
-				if(!key.equals("mode")) {
-					paramsArrayList.add(value);
-				}
-				
-			}
-			
-			System.out.println("Parmas Array Liste");
-			for (int i = 0; i < paramsArrayList.size(); i++) {
-				System.out.println(paramsArrayList.get(i));
-			}
-			
-			
-			//Da Matlab keine ArrayListen entgegen nimmt muss die Arraylist hier in eine normales Array umgewandelt werden
-			paramsArray = paramsArrayList.toArray(new String[paramsArrayList.size()]);
-			//Da der Mode immer der erste Parameter in der config Datei ist und dieser immmer
-			//benötigt wird kann dieser hier direkt ausgelesen werden
-			mode = p.getProperty("mode");
-			*/
-			/*p.load(new FileInputStream("config.txt"));
-			
-			p.forEach(null);
-			
-			*/
-			/*mode = p.getProperty("mode");
-			normalFreqs = p.getProperty("normalFreqs");
-			lispFreqs = p.getProperty("lispFreqs");
-			restFreqs = p.getProperty("restFreqs");*/
-			
-			
-			
-		} catch (FileNotFoundException e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
-		} catch (IOException e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
-		}		
+	
 	}
 	
 
@@ -228,47 +176,56 @@ public class AudioAnalyzeLogic {
 	
 	public void stopAudioProcessing() {
 		
-		try {
-			eng.close();
-			audioAnalyzeGUI.matlabEngineLoading();
-			//Immer wenn die Matlab Engine hier neugestartet wird dann zeige Loading Screen
-			eng = MatlabEngine.startMatlab();
-			//Da die Matlab Engine einen absoluten Pfad entgegen nimmt wird hier der absolute Pfad es Projektes ermittelt
-			Path root = FileSystems.getDefault().getPath("").toAbsolutePath();
-			String rootPath = root.toString();
-			rootPath = rootPath + "\\src";
-
-			//Pfad zum Ordner im welchen das Script liegt
-			eng.eval("cd " + rootPath);
+		//Hier wird ein neuer Thread erstellt, damit die Funktion noch abgebrochen werden kann
+		audioProcessingThread = new Thread(new Runnable() {
 			
-			//Wenn Matlab Engine fertig geladen ist dann starte main Frame über matlabEngineLoaded
-			audioAnalyzeGUI.matlabEngineLoaded();
-			
-		} catch (CancellationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (EngineException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalStateException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (MatlabExecutionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (MatlabSyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ExecutionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		public void run() {
+		
+			try {
+				eng.close();
+				audioAnalyzeGUI.matlabEngineLoading();
+				//Immer wenn die Matlab Engine hier neugestartet wird dann zeige Loading Screen
+				eng = MatlabEngine.startMatlab();
+				//Da die Matlab Engine einen absoluten Pfad entgegen nimmt wird hier der absolute Pfad es Projektes ermittelt
+				Path root = FileSystems.getDefault().getPath("").toAbsolutePath();
+				String rootPath = root.toString();
+				rootPath = rootPath + "\\src";
+	
+				//Pfad zum Ordner im welchen das Script liegt
+				eng.eval("cd " + rootPath);
+				
+				//Wenn Matlab Engine fertig geladen ist dann starte main Frame über matlabEngineLoaded
+				audioAnalyzeGUI.matlabEngineLoaded();
+				
+			} catch (CancellationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (EngineException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalStateException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (MatlabExecutionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (MatlabSyntaxException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ExecutionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
+		
+		});
+		audioProcessingThread.start();
 		
 		/*try {
 			//eng.disconnect();
@@ -345,7 +302,7 @@ public class AudioAnalyzeLogic {
 	
 	//writeMode: soll die bestehende Datei überschrieben werden oder sollen
 	//Werte angehangen werden
-	public void callCalibrate(String mode, String property, String writeMode) {
+	public void callCalibrate(String mode, String property, String writeMode, String configFileName) {
 		
 		
 		//Hier wird ein neuer Thread erstellt, damit die Funktion noch abgebrochen werden kann
@@ -356,13 +313,13 @@ public class AudioAnalyzeLogic {
 				try {
 					
 					//Matlab Funktion wird aufgerufen
-					double[] property_values = eng.feval("callCalibrate", mode, "lisp");
+					double[] property_values = eng.feval("callCalibrate", mode, property);
 
 					
 					try {
 						//Fall falls die Datei überschrieben werden soll
 						if(writeMode.equals("override")) {
-							PrintWriter writer = new PrintWriter("config.txt", "UTF-8");
+							PrintWriter writer = new PrintWriter(configFileName, "UTF-8");
 							
 							//Mode kann hier manuell gesetzt werden, da mode immer die
 							//erste Eigenschaft in der Config Datei ist
@@ -387,7 +344,7 @@ public class AudioAnalyzeLogic {
 						}
 						else if(writeMode.equals("append")) {
 							//Fall wenn an die Config Datei angehangen werden soll
-							FileWriter fileWriter = new FileWriter("config.txt", true);
+							FileWriter fileWriter = new FileWriter(configFileName, true);
 							PrintWriter writer = new PrintWriter(fileWriter);
 							
 							writer.println("");

@@ -8,5 +8,6 @@ public interface AudioAnalyzeGUI {
 	public void audioAnalyzeNotification();
 	public void matlabEngineLoaded();
 	public void matlabEngineLoading();
+	public String getConfigFileName();
 	
 }
