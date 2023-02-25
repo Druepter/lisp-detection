@@ -221,7 +221,7 @@ public class LispDetectionGUI implements ActionListener, AudioAnalyzeGUI{
 		TimerTask setCalibartionLabelToDone = new TimerTask() {
 			@Override
 			public void run() {
-				sSound.setText("Die Kalibrierung ist nun beendet.");
+				sSound.setText("The calibration is completed.");
 			}
 		};
 		

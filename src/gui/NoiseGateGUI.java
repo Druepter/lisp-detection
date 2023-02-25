@@ -189,7 +189,7 @@ public class NoiseGateGUI implements ActionListener, AudioAnalyzeGUI{
         calibrationFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         
         //Threshold muss überschritten werden
-        JLabel sSound = new JLabel("Please make loud noise.");
+        JLabel sSound = new JLabel("Please make loud noise for seven seconds.");
      
         calibrationPanel.setSize(200, 200);
         calibrationPanel.setBackground(Color.white);
@@ -203,6 +203,15 @@ public class NoiseGateGUI implements ActionListener, AudioAnalyzeGUI{
 		calibrationFrame.pack();
 		calibrationFrame.setResizable(false);
 		calibrationFrame.setVisible(true);
+		
+		Timer timer = new Timer();
+		TimerTask setCalibartionLabelToDone = new TimerTask() {
+			@Override
+			public void run() {
+				sSound.setText("The calibration is completed.");
+			}
+		};
+		timer.schedule(setCalibartionLabelToDone, 7000);
 		
    
     }	

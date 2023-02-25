@@ -28,4 +28,7 @@ function [params, name] = callCalibrate(mode, opts)
     else
         error("Unknown mode passed!")
     end
+    disp("params normal: " + params);
+    params = [params];
+    disp("params array: " + params);
 end

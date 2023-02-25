@@ -313,7 +313,30 @@ public class AudioAnalyzeLogic {
 				try {
 					
 					//Matlab Funktion wird aufgerufen
-					double[] property_values = eng.feval("callCalibrate", mode, property);
+					//Double property_values_1 = eng.feval("callCalibrate", mode, property);
+					//System.out.println("Values 1 " + property_values_1);
+					
+					//Varibale um nachher zu vergleichen ob es ein Double oder double Array ist
+					Double doubleD = 0.0;
+					double[] property_values;
+					
+					Object property_values_object = eng.feval("callCalibrate", mode, property);
+					System.out.println(property_values_object);
+					
+					if(property_values_object.getClass().equals(doubleD.getClass())) {
+						property_values = new double[1];
+						property_values[0] = (double) property_values_object;
+						System.out.println(property_values[0]);
+					}
+					else {
+						property_values = (double[]) property_values_object;
+					}
+					
+					
+					//System.out.println(property_values2.getClass().equals(doubleArray.getClass()));
+					//System.out.println(property_values2.getClass().equals(doubleD.getClass()));
+					
+					//double[] property_values = eng.feval("callCalibrate", mode, property);
 
 					
 					try {
@@ -331,10 +354,10 @@ public class AudioAnalyzeLogic {
 							//wurde und schreibe diese hinter den Parameter
 							for(int i = 0; i < property_values.length; i++) {
 								if(i != property_values.length - 1) {
-									writer.print((int)property_values[i] + ", ");
+									writer.print((double)property_values[i] + ", ");
 								}
 								else {
-									writer.print((int)property_values[i]);
+									writer.print((double)property_values[i]);
 								}
 								
 								
@@ -354,10 +377,10 @@ public class AudioAnalyzeLogic {
 							//wurde und schreibe diese hinter den Parameter
 							for(int i = 0; i < property_values.length; i++) {
 								if(i != property_values.length - 1) {
-									writer.print((int)property_values[i] + ", ");
+									writer.print((double)property_values[i] + ", ");
 								}
 								else {
-									writer.print((int)property_values[i]);
+									writer.print((double)property_values[i]);
 								}
 								
 								
