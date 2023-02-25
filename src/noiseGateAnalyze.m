@@ -9,8 +9,11 @@ function isAbove = noiseGateAnalyze(audio, threshold)
     %
     % Returns:
     % * isAbove: 0 for no values in audio above threshold, 1 otherwise
-    isAbove = 0; % the default output if nothing is detected should be 0
-    % for our noise gate we check if any sample within the audio array is
+    
+    % convert param to appropriate type
+    threshold = str2double(threshold);
+    % the default output if nothing is detected should be 0
+    isAbove = 0;     % for our noise gate we check if any sample within the audio array is
     % above our threshold
     if any(audio > threshold)
         % if this is the case we return one
