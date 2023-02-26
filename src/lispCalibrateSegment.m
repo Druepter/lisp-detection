@@ -14,6 +14,6 @@ function freqs = lispCalibrateSegment(audio, bandPass)
     % we only need the locations of peaks as these correspond to
     % frequencies
     [~, locs] = findpeaks(ofInterest, 'MaxPeakWidth', 1000, ...
-        'MinPeakHeight', max(ofInterest) / 4);
+        'MinPeakHeight', max(ofInterest) / 1.5);
     freqs = [min(locs) + bandPass(1), max(locs) + bandPass(1)];
 end
