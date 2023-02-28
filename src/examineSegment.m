@@ -1,5 +1,7 @@
 function isHit = examineSegment(fftMagnitude, segment, rest)
     % EXAMINESEGMENT Examing an audio segment's FFT magnitude
+    %
+    % examineSegment(fftMagnitudeArray, [1000, 2000], [1000, 4000])
     % 
     % Parameters:
     % * fftMagnitude: Audio segment's FFT magnitude.

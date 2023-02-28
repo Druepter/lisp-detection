@@ -1,7 +1,9 @@
 function [params, name] = callCalibrate(mode, opts)
     % CALLCALIBRATE call calibration function
     % 
-    % callCalibrate("noisegate")
+    % callCalibrate("noisegate", "threshold")
+    % 
+    % callCalibrate("lisp", "lisp")
     % 
     % This doesn't do the full calibration. The function needs to be called
     % the same number of times as desired parameters.

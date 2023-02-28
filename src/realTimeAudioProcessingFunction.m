@@ -1,9 +1,9 @@
 function [i_and_count] = realTimeAudioProcessingFunction(mode, params)
     % REALTIMEAUDIOPROCESSINGFUNCTION
     %
-    % realTimeAudioProcessingFunction("lisp", [1050, 5500; 1350, 6500])
+    % realTimeAudioProcessingFunction("lisp", "[1050, 5500; 1350, 6500]")
     %
-    % realTimeAudioProcessingFunction("noisegate", 0.1)
+    % realTimeAudioProcessingFunction("noisegate", "0.1")
     %
     % Params:
     % * mode:   audio processing mode [lisp, noisegate]

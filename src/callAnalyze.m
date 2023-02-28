@@ -1,5 +1,7 @@
 function [i_and_count] = callAnalyze(mode, i_and_count, audio, params)
     % CALLANALYZE Call an analysis mode
+    %
+    % callAnalyze("lisp", [1, 2], audioArray, "[1000, 3000; 2000, 4000]")
     % 
     % Parameters:
     % * mode: Analysis mode as string, currently only "lisp" is supported.

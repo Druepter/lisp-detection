@@ -1,7 +1,7 @@
 function isLisp = lispAnalyze(audio, normal, lisp)
     % LISPANALYZE Analyze audio array for lisping
     % 
-    % lispAnalyze(audio, [1050, 1350], [5500, 6500], [1000, 22050])
+    % lispAnalyze(audio, [1050, 1350], [5500, 6500])
     % 
     % Parameters:
     % * audio:  audio array to be analyzed
@@ -13,17 +13,19 @@ function isLisp = lispAnalyze(audio, normal, lisp)
     %   for correct pronunciation detected.
    
     % converting params to match required form
-    normal = strsplit(normal,',');
-    normal = str2double(normal);
+    if isstring(normal)
+        normal = strsplit(normal,',');
+        normal = str2double(normal);
+    end
 
-    lisp = strsplit(lisp,',');
-    lisp = str2double(lisp);
+    if isstring(lisp)
+        lisp = strsplit(lisp,',');
+        lisp = str2double(lisp);
+    end
 
     % audioDeviceReader defaults to 22050 anyway so we don't have to save this
     % this is the bandpass to be applied
     rest = [1000 22050];
-    % rest = strsplit(rest,',');
-    % rest = str2double(rest);
 
     % use standard deviation to detect speech
     % the julia script used a larger audio file as reference
@@ -32,7 +34,6 @@ function isLisp = lispAnalyze(audio, normal, lisp)
     % an alternative to this would be a noise gate or a
     % reference mean found during calibration
     if std(audio) < 0.02
-        disp("Er geht hier rein")
         isLisp = 0;
         return
     end
