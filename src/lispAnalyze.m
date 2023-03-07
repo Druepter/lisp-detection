@@ -25,7 +25,7 @@ function isLisp = lispAnalyze(audio, normal, lisp)
 
     % audioDeviceReader defaults to 22050 anyway so we don't have to save this
     % this is the bandpass to be applied
-    rest = [1000 22050];
+    rest = [5000 22050];
 
     % use standard deviation to detect speech
     % the julia script used a larger audio file as reference
